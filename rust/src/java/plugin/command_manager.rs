@@ -279,17 +279,13 @@ impl CommandManager {
                     );
                     let j_player = jvm.create_instance(
                         "org.patchbukkit.entity.PatchBukkitPlayer",
-                        &[
-                            InvocationArg::from(j_uuid),
-                            InvocationArg::try_from(name)?,
-                        ],
+                        &[InvocationArg::from(j_uuid), InvocationArg::try_from(name)?],
                     )?;
 
                     jvm.invoke(
                         &j_player,
                         "setOp",
-                        &[InvocationArg::try_from(true)?
-                            .into_primitive()?],
+                        &[InvocationArg::try_from(true)?.into_primitive()?],
                     )?;
 
                     jvm.invoke(
