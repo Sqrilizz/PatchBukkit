@@ -47,6 +47,13 @@ impl CommandManager {
         Ok(())
     }
 
+    fn get_or_init_command_map(&mut self, jvm: &Jvm) -> Result<&Instance> {
+        if self.command_map.is_none() {
+            self.init(jvm)?;
+        }
+        Ok(self.command_map.as_ref().unwrap())
+    }
+
     pub fn get_tab_complete(
         &mut self,
         jvm: &Jvm,
@@ -70,13 +77,7 @@ impl CommandManager {
         full_command: String,
         location: Option<Location>,
     ) -> Result<Option<Vec<CommandSuggestion>>> {
-        let command_map = match self.command_map {
-            Some(ref command_map) => command_map,
-            None => match self.init(jvm) {
-                Ok(()) => self.command_map.as_ref().unwrap(),
-                Err(_) => return Ok(None),
-            },
-        };
+        let command_map = self.get_or_init_command_map(jvm)?;
 
         let sender = Self::sender_to_jsender(jvm, sender)?;
 
@@ -149,13 +150,7 @@ impl CommandManager {
         cmd_data: &config::spigot::Command,
         command_tx: mpsc::Sender<JvmCommand>,
     ) -> Result<()> {
-        let command_map = match self.command_map {
-            Some(ref command_map) => command_map,
-            None => match self.init(jvm) {
-                Ok(()) => self.command_map.as_ref().unwrap(),
-                Err(err) => return Err(err),
-            },
-        };
+        let command_map = self.get_or_init_command_map(jvm)?;
 
         let plugin_instance =
             jvm.clone_instance(plugin.instance.as_ref().expect(
@@ -190,12 +185,6 @@ impl CommandManager {
             cmd_data.description.clone().unwrap_or_default(),
         );
 
-        // TODO
-        // let permission = if let Some(perm) = cmd_data.permission.clone() {
-        //     perm
-        // } else {
-        //     format!("patchbukkit:{}", cmd_name) // TODO
-        // };
         let permission = format!("patchbukkit:{cmd_name}");
 
         if let Err(e) = context
@@ -224,13 +213,7 @@ impl CommandManager {
         full_command: String,
         sender: SimpleCommandSender,
     ) -> Result<()> {
-        let command_map = match self.command_map {
-            Some(ref command_map) => command_map,
-            None => match self.init(jvm) {
-                Ok(()) => self.command_map.as_ref().unwrap(),
-                Err(err) => return Err(err),
-            },
-        };
+        let command_map = self.get_or_init_command_map(jvm)?;
 
         let j_sender = Self::sender_to_jsender(jvm, sender)?;
 
@@ -239,14 +222,20 @@ impl CommandManager {
             "dispatch",
             &[
                 InvocationArg::from(j_sender),
-                InvocationArg::try_from(full_command)?,
+                InvocationArg::try_from(full_command.clone())?,
             ],
-        )?;
+        );
 
-        let handled: bool = jvm.to_rust(dispatch_result)?;
-
-        if !handled {
-            //tracing::warn!("Command was not handled by any Java plugin: {}", cmd_name);
+        match dispatch_result {
+            Ok(result) => {
+                let handled: bool = jvm.to_rust(result)?;
+                if !handled {
+                    tracing::warn!("Command not handled by any Java plugin: {full_command}");
+                }
+            }
+            Err(e) => {
+                tracing::error!("Java exception during command dispatch '{full_command}': {e:?}");
+            }
         }
 
         Ok(())
@@ -260,7 +249,7 @@ impl CommandManager {
                 InvocationArg::empty(),
             )?),
 
-            SimpleCommandSender::Player(uuid_str) => {
+            SimpleCommandSender::Player(uuid_str, name) => {
                 let server =
                     jvm.invoke_static("org.bukkit.Bukkit", "getServer", InvocationArg::empty())?;
                 let patch_server = jvm.cast(&server, "org.patchbukkit.PatchBukkitServer")?;
@@ -271,7 +260,48 @@ impl CommandManager {
                     &[InvocationArg::try_from(uuid_str)?],
                 )?;
 
-                Ok(jvm.invoke(&patch_server, "getPlayer", &[InvocationArg::from(j_uuid)])?)
+                let j_player = jvm.invoke(
+                    &patch_server,
+                    "getPlayer",
+                    &[InvocationArg::from(jvm.clone_instance(&j_uuid)?)],
+                )?;
+
+                let is_null: bool = jvm.to_rust(jvm.invoke_static(
+                    "java.util.Objects",
+                    "isNull",
+                    &[InvocationArg::from(jvm.clone_instance(&j_player)?)],
+                )?)?;
+
+                if is_null {
+                    tracing::info!(
+                        "Player not found in Java, creating PatchBukkitPlayer for {}",
+                        name
+                    );
+                    let j_player = jvm.create_instance(
+                        "org.patchbukkit.entity.PatchBukkitPlayer",
+                        &[
+                            InvocationArg::from(j_uuid),
+                            InvocationArg::try_from(name)?,
+                        ],
+                    )?;
+
+                    jvm.invoke(
+                        &j_player,
+                        "setOp",
+                        &[InvocationArg::try_from(true)?
+                            .into_primitive()?],
+                    )?;
+
+                    jvm.invoke(
+                        &patch_server,
+                        "registerPlayer",
+                        &[InvocationArg::from(jvm.clone_instance(&j_player)?)],
+                    )?;
+
+                    Ok(j_player)
+                } else {
+                    Ok(j_player)
+                }
             }
         }
     }

@@ -40,16 +40,9 @@ public final class TestFramework {
     }
 
     public List<TestResult> runCategory(TestCategory category) {
-        List<TestResult> results = new ArrayList<>();
-        for (Object suite : suites) {
-            for (Method method : suite.getClass().getDeclaredMethods()) {
-                ConformanceTest ann = method.getAnnotation(ConformanceTest.class);
-                if (ann != null && ann.category() == category) {
-                    results.add(runTest(suite, method, ann));
-                }
-            }
-        }
-        return results;
+        return runAll().stream()
+                .filter(r -> r.category() == category)
+                .toList();
     }
 
     private List<TestResult> runSuite(Object suite) {
@@ -59,6 +52,9 @@ public final class TestFramework {
             if (ann != null) {
                 results.add(runTest(suite, method, ann));
             }
+        }
+        if (suite instanceof DynamicTestProvider provider) {
+            results.addAll(provider.runDynamicTests());
         }
         return results;
     }
