@@ -106,19 +106,28 @@ pub unsafe extern "C" fn {fn_name}(
     output_len: *mut usize,
 ) -> *mut u8 {{
     use prost::Message;
+    tracing::debug!("{fn_name}: called with input_ptr={{:?}}, input_len={{}}", input_ptr, input_len);
+    if input_ptr.is_null() || input_len == 0 {{
+        tracing::warn!("{fn_name}: null or empty input (ptr={{:?}}, len={{}})", input_ptr, input_len);
+        unsafe {{ *output_len = 0 }};
+        return std::ptr::null_mut();
+    }}
     let input_slice = unsafe {{ std::slice::from_raw_parts(input_ptr, input_len) }};
     let Ok(request) = {input_type}::decode(input_slice) else {{
+        tracing::warn!("{fn_name}: failed to decode request");
         unsafe {{ *output_len = 0 }};
         return std::ptr::null_mut();
     }};
     let Some(response) = {0}::{fn_name}_impl(request) else {{
+        tracing::debug!("{fn_name}: impl returned None");
         unsafe {{ *output_len = 0 }};
         return std::ptr::null_mut();
     }};
-    let encoded = response.encode_to_vec();
-    unsafe {{ *output_len = encoded.len() }};
-    let ptr = encoded.as_ptr() as *mut u8;
-    std::mem::forget(encoded);
+    let encoded = response.encode_to_vec().into_boxed_slice();
+    let len = encoded.len();
+    unsafe {{ *output_len = len }};
+    let ptr = Box::into_raw(encoded) as *mut u8;
+    tracing::debug!("{fn_name}: returning ptr={{:?}}, len={{}}", ptr, len);
     ptr
 }}
 "#,
@@ -185,10 +194,12 @@ pub fn setup_protobufs(base: PathBuf) {
 /// - The pointer must not have been freed previously
 #[unsafe(no_mangle)]
 pub unsafe extern "C" fn ffi_free_bytes(ptr: *mut u8, len: usize) {{
-    if !ptr.is_null() && len > 0 {{
-        unsafe {{
-            drop(Vec::from_raw_parts(ptr, len, len));
-        }}
+    if ptr.is_null() || len == 0 {{
+        return;
+    }}
+    unsafe {{
+        let slice = std::slice::from_raw_parts_mut(ptr, len);
+        drop(Box::from_raw(slice));
     }}
 }}
 

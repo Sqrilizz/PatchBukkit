@@ -25,8 +25,8 @@ pub struct JavaCommandExecutor {
 #[derive(Clone)]
 pub enum SimpleCommandSender {
     Console,
-    /// UUID
-    Player(String),
+    /// UUID, Name
+    Player(String, String),
 }
 
 pub struct AnyCommandNode {
@@ -114,8 +114,12 @@ impl From<&CommandSender> for SimpleCommandSender {
         match val {
             CommandSender::Rcon(_mutex) => todo!(),
             CommandSender::Console => Self::Console,
-            CommandSender::Player(player) => Self::Player(player.gameprofile.id.to_string()),
+            CommandSender::Player(player) => Self::Player(
+                player.gameprofile.id.to_string(),
+                player.gameprofile.name.clone(),
+            ),
             CommandSender::CommandBlock(_block_entity, _world) => todo!(),
+            CommandSender::Dummy => Self::Console,
         }
     }
 }

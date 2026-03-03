@@ -10,5 +10,6 @@ public enum TestCategory {
     ENTITY,
     CONSOLE_SENDER,
     UNSAFE_VALUES,
-    STUBS
+    STUBS,
+    LEGACY_MATERIALS
 }

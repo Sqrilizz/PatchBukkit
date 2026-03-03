@@ -37,7 +37,6 @@ pub mod config;
 pub use config::*;
 
 pub mod itemstack;
-pub use itemstack::*;
 
 static CALLBACK_CONTEXT: OnceLock<CallbackContext> = OnceLock::new();
 

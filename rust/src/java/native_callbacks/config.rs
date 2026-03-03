@@ -6,8 +6,9 @@ use crate::{
 pub fn ffi_native_bridge_get_patch_bukkit_config_impl(
     _request: EmptyRequest,
 ) -> Option<GetPatchBukkitConfigResponse> {
-    if let Some(context) = CALLBACK_CONTEXT.get() {
-        Some(GetPatchBukkitConfigResponse {
+    CALLBACK_CONTEXT
+        .get()
+        .map(|context| GetPatchBukkitConfigResponse {
             minimum_supported_plugin_api: context
                 .config
                 .settings
@@ -15,7 +16,4 @@ pub fn ffi_native_bridge_get_patch_bukkit_config_impl(
                 .clone()
                 .unwrap_or("0.0.0".to_string()),
         })
-    } else {
-        None
-    }
 }
