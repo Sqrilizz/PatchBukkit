@@ -1,6 +1,8 @@
 package org.patchbukkit;
 
 import com.destroystokyo.paper.entity.ai.MobGoals;
+import com.google.common.base.Preconditions;
+
 import io.papermc.paper.ban.BanListType;
 import io.papermc.paper.configuration.ServerConfiguration;
 import io.papermc.paper.datapack.DatapackManager;
@@ -8,6 +10,7 @@ import io.papermc.paper.math.Position;
 import io.papermc.paper.threadedregions.scheduler.AsyncScheduler;
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import io.papermc.paper.threadedregions.scheduler.RegionScheduler;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.InetAddress;
@@ -43,6 +46,7 @@ import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.WorldCreator;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.block.BlockType;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
@@ -1493,10 +1497,8 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public @NotNull BlockData createBlockData(@NotNull Material material) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'createBlockData'"
-        );
+        Preconditions.checkArgument(material != null, "Material cannot be null");
+        return this.createBlockData(material, (String) null);
     }
 
     @Override
@@ -1504,19 +1506,20 @@ public class PatchBukkitServer implements Server {
         @NotNull Material material,
         @Nullable Consumer<? super BlockData> consumer
     ) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'createBlockData'"
-        );
+        BlockData data = this.createBlockData(material);
+
+        if (consumer != null) {
+            consumer.accept(data);
+        }
+
+        return data;
     }
 
     @Override
-    public @NotNull BlockData createBlockData(@NotNull String data)
-        throws IllegalArgumentException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'createBlockData'"
-        );
+    public @NotNull BlockData createBlockData(@NotNull String data) {
+        Preconditions.checkArgument(data != null, "data cannot be null");
+
+        return this.createBlockData(null, data);
     }
 
     @Override
@@ -1524,10 +1527,14 @@ public class PatchBukkitServer implements Server {
         @Nullable Material material,
         @Nullable String data
     ) throws IllegalArgumentException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'createBlockData'"
-        );
+        Preconditions.checkArgument(material != null || data != null, "Must provide one of material or data");
+        BlockType type = null;
+        if (material != null) {
+            type = material.asBlockType();
+            Preconditions.checkArgument(type != null, "Provided material must be a block");
+        }
+
+        return PatchBukkitBlockData.newData(type, data);
     }
 
     @Override
