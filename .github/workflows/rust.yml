@@ -20,10 +20,6 @@ jobs:
               with:
                   java-version: "25"
                   distribution: "temurin"
-            - name: Install Protoc
-              uses: arduino/setup-protoc@v3
-              with:
-                  repo-token: ${{ secrets.GITHUB_TOKEN }}
             - name: Setup Gradle
               uses: gradle/actions/setup-gradle@v5
             - name: Build JAR with Gradle
@@ -82,10 +78,9 @@ jobs:
               with:
                   name: patchbukkit-jar
                   path: java/patchbukkit/build/libs/
-            - name: Install Protoc
-              uses: arduino/setup-protoc@v3
-              with:
-                  repo-token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Sync Pumpkin dependencies
+              run: cargo update -p pumpkin -p pumpkin-api-macros -p pumpkin-data -p pumpkin-protocol -p pumpkin-util
+              working-directory: rust
             - name: Clippy (debug)
               run: cargo clippy --all-targets --all-features
               working-directory: rust
@@ -108,10 +103,9 @@ jobs:
               with:
                   name: patchbukkit-jar
                   path: java/patchbukkit/build/libs/
-            - name: Install Protoc
-              uses: arduino/setup-protoc@v3
-              with:
-                  repo-token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Sync Pumpkin dependencies
+              run: cargo update -p pumpkin -p pumpkin-api-macros -p pumpkin-data -p pumpkin-protocol -p pumpkin-util
+              working-directory: rust
             - name: Clippy (release)
               run: cargo clippy --release --all-targets --all-features
               working-directory: rust
@@ -142,10 +136,9 @@ jobs:
               with:
                   name: patchbukkit-jar
                   path: java/patchbukkit/build/libs/
-            - name: Install Protoc
-              uses: arduino/setup-protoc@v3
-              with:
-                  repo-token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Sync Pumpkin dependencies
+              run: cargo update -p pumpkin -p pumpkin-api-macros -p pumpkin-data -p pumpkin-protocol -p pumpkin-util
+              working-directory: rust
             - name: Build Release
               shell: bash
               run: |

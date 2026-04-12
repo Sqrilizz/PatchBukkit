@@ -30,9 +30,17 @@ use crate::{
     },
 };
 
+const PATCHBUKKIT_PUMPKIN_VERSION: &str = env!("PATCHBUKKIT_PUMPKIN_VERSION");
+const PATCHBUKKIT_PUMPKIN_REVISION: &str = env!("PATCHBUKKIT_PUMPKIN_REVISION");
+const PATCHBUKKIT_PUMPKIN_REVISION_SHORT: &str = env!("PATCHBUKKIT_PUMPKIN_REVISION_SHORT");
+
 async fn on_load_inner(plugin: &PatchBukkitPlugin, server: Arc<Context>) -> Result<(), String> {
     server.init_log();
     tracing::info!("Starting PatchBukkit");
+    tracing::info!(
+        "Built against Pumpkin {PATCHBUKKIT_PUMPKIN_VERSION} ({PATCHBUKKIT_PUMPKIN_REVISION_SHORT})"
+    );
+    tracing::debug!("Full Pumpkin dependency revision: {PATCHBUKKIT_PUMPKIN_REVISION}");
 
     // Setup directories
     let dirs = setup_directories(&server)?;

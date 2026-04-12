@@ -11,8 +11,12 @@ pub struct PatchBukkitDirectories {
 }
 
 pub fn setup_directories(server: &Context) -> Result<PatchBukkitDirectories, String> {
-    let base = std::path::absolute(server.get_data_folder())
+    let data_folder = std::path::absolute(server.get_data_folder())
         .map_err(|_| "Failed to get absolute directory from relative")?;
+    let server_root = data_folder
+        .parent()
+        .ok_or("Failed to determine server root from PatchBukkit data folder")?;
+    let base = server_root.join("patchbukkit");
 
     let plugins = base.join("patchbukkit-plugins");
     let plugin_updates = plugins.join("update");

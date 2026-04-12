@@ -16,6 +16,8 @@ use crate::{
     },
 };
 
+const PATCHBUKKIT_PERMISSION_NAMESPACE: &str = "patchbukkit";
+
 pub struct CommandManager {
     command_map: Option<Instance>,
 }
@@ -185,21 +187,34 @@ impl CommandManager {
             cmd_data.description.clone().unwrap_or_default(),
         );
 
-        let permission = format!("patchbukkit:{cmd_name}");
+        let permission = build_permission_node(&plugin.name, &cmd_name);
 
-        if let Err(e) = context
-            .register_permission(Permission::new(
-                &permission,
-                &permission,
-                PermissionDefault::Allow,
-            ))
-            .await
-        {
-            tracing::warn!(
-                "Failed to register permission for command {}: {:?}",
-                cmd_name,
-                e
-            );
+        let registry = {
+            let permission_manager = context.permission_manager.read().await;
+            permission_manager.registry.clone()
+        };
+
+        if let Err(e) = registry.write().await.register_permission(Permission::new(
+            &permission,
+            &format!(
+                "Allows running the Bukkit command `{cmd_name}` from `{}`",
+                plugin.name
+            ),
+            PermissionDefault::Allow,
+        )) {
+            if e.contains("already registered") {
+                tracing::debug!(
+                    "Permission already registered for command {}: {}",
+                    cmd_name,
+                    e
+                );
+            } else {
+                tracing::warn!(
+                    "Failed to register permission for command {}: {:?}",
+                    cmd_name,
+                    e
+                );
+            }
         }
 
         context.register_command(node, permission).await;
@@ -300,5 +315,51 @@ impl CommandManager {
                 }
             }
         }
+    }
+}
+
+fn build_permission_node(plugin_name: &str, cmd_name: &str) -> String {
+    let plugin_segment = sanitize_permission_segment(plugin_name);
+    let command_segment = sanitize_permission_segment(cmd_name);
+    format!("{PATCHBUKKIT_PERMISSION_NAMESPACE}:command.{plugin_segment}.{command_segment}")
+}
+
+fn sanitize_permission_segment(value: &str) -> String {
+    let sanitized: String = value
+        .chars()
+        .map(|ch| {
+            if ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | '-') {
+                ch.to_ascii_lowercase()
+            } else {
+                '_'
+            }
+        })
+        .collect();
+
+    if sanitized.is_empty() {
+        "unknown".to_string()
+    } else {
+        sanitized
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::build_permission_node;
+
+    #[test]
+    fn permission_node_is_namespaced_and_stable() {
+        assert_eq!(
+            build_permission_node("SimpleSpawn", "spawn"),
+            "patchbukkit:command.simplespawn.spawn"
+        );
+    }
+
+    #[test]
+    fn permission_node_sanitizes_unfriendly_characters() {
+        assert_eq!(
+            build_permission_node("Fancy Plugin", "Spawn-All"),
+            "patchbukkit:command.fancy_plugin.spawn-all"
+        );
     }
 }
