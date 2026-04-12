@@ -4,7 +4,10 @@ use anyhow::Result;
 use j4rs::{Instance, InvocationArg, Jvm};
 use pumpkin::{command::dispatcher::CommandError, plugin::Context};
 use pumpkin_protocol::java::client::play::CommandSuggestion;
-use pumpkin_util::permission::{Permission, PermissionDefault};
+use pumpkin_util::{
+    PermissionLvl,
+    permission::{Permission, PermissionDefault},
+};
 use tokio::sync::mpsc;
 
 use crate::{
@@ -187,7 +190,7 @@ impl CommandManager {
             cmd_data.description.clone().unwrap_or_default(),
         );
 
-        let permission = build_permission_node(&plugin.name, &cmd_name);
+        let (permission, permission_default) = build_permission_node(&cmd_name, cmd_data);
 
         let registry = {
             let permission_manager = context.permission_manager.read().await;
@@ -200,7 +203,7 @@ impl CommandManager {
                 "Allows running the Bukkit command `{cmd_name}` from `{}`",
                 plugin.name
             ),
-            PermissionDefault::Allow,
+            permission_default,
         )) {
             if e.contains("already registered") {
                 tracing::debug!(
@@ -318,48 +321,66 @@ impl CommandManager {
     }
 }
 
-fn build_permission_node(plugin_name: &str, cmd_name: &str) -> String {
-    let plugin_segment = sanitize_permission_segment(plugin_name);
-    let command_segment = sanitize_permission_segment(cmd_name);
-    format!("{PATCHBUKKIT_PERMISSION_NAMESPACE}:command.{plugin_segment}.{command_segment}")
-}
-
-fn sanitize_permission_segment(value: &str) -> String {
-    let sanitized: String = value
-        .chars()
-        .map(|ch| {
-            if ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | '-') {
-                ch.to_ascii_lowercase()
-            } else {
-                '_'
-            }
-        })
-        .collect();
-
-    if sanitized.is_empty() {
-        "unknown".to_string()
+fn build_permission_node(
+    cmd_name: &str,
+    cmd_data: &config::spigot::Command,
+) -> (String, PermissionDefault) {
+    if let Some(permission) = &cmd_data.permission {
+        (
+            permission.clone(),
+            PermissionDefault::Op(PermissionLvl::Two),
+        )
     } else {
-        sanitized
+        (
+            format!("{PATCHBUKKIT_PERMISSION_NAMESPACE}:command.{cmd_name}"),
+            PermissionDefault::Allow,
+        )
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use pumpkin_util::{PermissionLvl, permission::PermissionDefault};
+
+    use crate::config::spigot::Command;
+
     use super::build_permission_node;
 
     #[test]
-    fn permission_node_is_namespaced_and_stable() {
+    fn permission_node_uses_explicit_plugin_permission() {
+        let command = Command {
+            description: None,
+            usage: None,
+            aliases: None,
+            permission: Some("simplespawn.spawn".to_string()),
+            permission_message: None,
+        };
+
         assert_eq!(
-            build_permission_node("SimpleSpawn", "spawn"),
-            "patchbukkit:command.simplespawn.spawn"
+            build_permission_node("spawn", &command),
+            (
+                "simplespawn.spawn".to_string(),
+                PermissionDefault::Op(PermissionLvl::Two)
+            )
         );
     }
 
     #[test]
-    fn permission_node_sanitizes_unfriendly_characters() {
+    fn permission_node_falls_back_to_patchbukkit_namespace() {
+        let command = Command {
+            description: None,
+            usage: None,
+            aliases: None,
+            permission: None,
+            permission_message: None,
+        };
+
         assert_eq!(
-            build_permission_node("Fancy Plugin", "Spawn-All"),
-            "patchbukkit:command.fancy_plugin.spawn-all"
+            build_permission_node("spawn", &command),
+            (
+                "patchbukkit:command.spawn".to_string(),
+                PermissionDefault::Allow
+            )
         );
     }
 }
