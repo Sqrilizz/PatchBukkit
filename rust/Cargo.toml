@@ -2,6 +2,8 @@
 name = "patchbukkit"
 version = "0.1.0"
 edition = "2024"
+authors = ["PumpkinMC Contributors"]
+description = "Compatibility layer for running Bukkit, Spigot, and Paper plugins on Pumpkin"
 
 build = "build/main.rs"
 
@@ -41,6 +43,7 @@ j4rs = { version = "0.24", artifact = "cdylib", lib = true }
 env_logger = "0.11.8"
 log = "0.4"
 prost-build = "0.14"
+protoc-bin-vendored = "3"
 glob = "0.3"
 
 [profile.release]

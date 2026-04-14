@@ -4,7 +4,10 @@ use anyhow::Result;
 use j4rs::{Instance, InvocationArg, Jvm};
 use pumpkin::{command::dispatcher::CommandError, plugin::Context};
 use pumpkin_protocol::java::client::play::CommandSuggestion;
-use pumpkin_util::permission::{Permission, PermissionDefault};
+use pumpkin_util::{
+    PermissionLvl,
+    permission::{Permission, PermissionDefault},
+};
 use tokio::sync::mpsc;
 
 use crate::{
@@ -15,6 +18,8 @@ use crate::{
         plugin::manager::Plugin,
     },
 };
+
+const PATCHBUKKIT_PERMISSION_NAMESPACE: &str = "patchbukkit";
 
 pub struct CommandManager {
     command_map: Option<Instance>,
@@ -185,21 +190,34 @@ impl CommandManager {
             cmd_data.description.clone().unwrap_or_default(),
         );
 
-        let permission = format!("patchbukkit:{cmd_name}");
+        let (permission, permission_default) = build_permission_node(&cmd_name, cmd_data);
 
-        if let Err(e) = context
-            .register_permission(Permission::new(
-                &permission,
-                &permission,
-                PermissionDefault::Allow,
-            ))
-            .await
-        {
-            tracing::warn!(
-                "Failed to register permission for command {}: {:?}",
-                cmd_name,
-                e
-            );
+        let registry = {
+            let permission_manager = context.permission_manager.read().await;
+            permission_manager.registry.clone()
+        };
+
+        if let Err(e) = registry.write().await.register_permission(Permission::new(
+            &permission,
+            &format!(
+                "Allows running the Bukkit command `{cmd_name}` from `{}`",
+                plugin.name
+            ),
+            permission_default,
+        )) {
+            if e.contains("already registered") {
+                tracing::debug!(
+                    "Permission already registered for command {}: {}",
+                    cmd_name,
+                    e
+                );
+            } else {
+                tracing::warn!(
+                    "Failed to register permission for command {}: {:?}",
+                    cmd_name,
+                    e
+                );
+            }
         }
 
         context.register_command(node, permission).await;
@@ -300,5 +318,69 @@ impl CommandManager {
                 }
             }
         }
+    }
+}
+
+fn build_permission_node(
+    cmd_name: &str,
+    cmd_data: &config::spigot::Command,
+) -> (String, PermissionDefault) {
+    if let Some(permission) = &cmd_data.permission {
+        (
+            permission.clone(),
+            PermissionDefault::Op(PermissionLvl::Two),
+        )
+    } else {
+        (
+            format!("{PATCHBUKKIT_PERMISSION_NAMESPACE}:command.{cmd_name}"),
+            PermissionDefault::Allow,
+        )
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use pumpkin_util::{PermissionLvl, permission::PermissionDefault};
+
+    use crate::config::spigot::Command;
+
+    use super::build_permission_node;
+
+    #[test]
+    fn permission_node_uses_explicit_plugin_permission() {
+        let command = Command {
+            description: None,
+            usage: None,
+            aliases: None,
+            permission: Some("simplespawn.spawn".to_string()),
+            permission_message: None,
+        };
+
+        assert_eq!(
+            build_permission_node("spawn", &command),
+            (
+                "simplespawn.spawn".to_string(),
+                PermissionDefault::Op(PermissionLvl::Two)
+            )
+        );
+    }
+
+    #[test]
+    fn permission_node_falls_back_to_patchbukkit_namespace() {
+        let command = Command {
+            description: None,
+            usage: None,
+            aliases: None,
+            permission: None,
+            permission_message: None,
+        };
+
+        assert_eq!(
+            build_permission_node("spawn", &command),
+            (
+                "patchbukkit:command.spawn".to_string(),
+                PermissionDefault::Allow
+            )
+        );
     }
 }

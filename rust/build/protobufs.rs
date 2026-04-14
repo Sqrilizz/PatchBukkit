@@ -164,6 +164,13 @@ fn to_snake_case(s: &str) -> String {
 }
 
 pub fn setup_protobufs(base: PathBuf) {
+    let protoc = protoc_bin_vendored::protoc_bin_path()
+        .expect("Failed to locate vendored protoc binary for PatchBukkit");
+    // Avoid requiring a host-wide protoc installation for local and CI builds.
+    unsafe {
+        std::env::set_var("PROTOC", protoc);
+    }
+
     let proto_path = base.parent().unwrap().join("proto");
     let paths: Vec<_> = glob(&format!("{}/**/*.proto", proto_path.display()))
         .expect("Failed to read glob pattern")
