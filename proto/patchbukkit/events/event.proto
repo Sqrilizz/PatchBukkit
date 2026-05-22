@@ -11,6 +11,8 @@ option java_package = "patchbukkit.events";
 message Event {
   oneof data {
     PlayerJoinEvent player_join = 1;
+    PlayerQuitEvent player_quit = 2;
+    PlayerChatEvent player_chat = 3;
   }
 }
 

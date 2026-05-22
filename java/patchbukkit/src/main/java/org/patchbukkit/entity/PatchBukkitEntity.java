@@ -133,8 +133,7 @@ public class PatchBukkitEntity implements Entity {
 
     @Override
     public @NotNull Component name() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'name'");
+        return Component.text(this.name);
     }
 
     @Override
@@ -294,14 +293,12 @@ public class PatchBukkitEntity implements Entity {
 
     @Override
     public double getHeight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHeight'");
+        return 1.8;
     }
 
     @Override
     public double getWidth() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWidth'");
+        return 0.6;
     }
 
     @Override
@@ -312,14 +309,12 @@ public class PatchBukkitEntity implements Entity {
 
     @Override
     public boolean isOnGround() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isOnGround'");
+        return true;
     }
 
     @Override
     public boolean isInWater() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isInWater'");
+        return false;
     }
 
     @Override
@@ -386,26 +381,21 @@ public class PatchBukkitEntity implements Entity {
 
     @Override
     public int getEntityId() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEntityId'");
+        return this.uuid.hashCode();
     }
 
     @Override
     public int getFireTicks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFireTicks'");
+        return 0;
     }
 
     @Override
     public int getMaxFireTicks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMaxFireTicks'");
+        return 20;
     }
 
     @Override
     public void setFireTicks(int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFireTicks'");
     }
 
     @Override
@@ -500,14 +490,12 @@ public class PatchBukkitEntity implements Entity {
 
     @Override
     public boolean isDead() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isDead'");
+        return false;
     }
 
     @Override
     public boolean isValid() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isValid'");
+        return true;
     }
 
     @Override
@@ -760,20 +748,17 @@ public class PatchBukkitEntity implements Entity {
 
     @Override
     public @NotNull Set<String> getScoreboardTags() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getScoreboardTags'");
+        return Set.of();
     }
 
     @Override
     public boolean addScoreboardTag(@NotNull String tag) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addScoreboardTag'");
+        return false;
     }
 
     @Override
     public boolean removeScoreboardTag(@NotNull String tag) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeScoreboardTag'");
+        return false;
     }
 
     @Override
@@ -826,8 +811,7 @@ public class PatchBukkitEntity implements Entity {
 
     @Override
     public boolean isInWorld() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isInWorld'");
+        return true;
     }
 
     @Override
@@ -928,32 +912,27 @@ public class PatchBukkitEntity implements Entity {
 
     @Override
     public double getX() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getX'");
+        return this.getLocation().getX();
     }
 
     @Override
     public double getY() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getY'");
+        return this.getLocation().getY();
     }
 
     @Override
     public double getZ() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getZ'");
+        return this.getLocation().getZ();
     }
 
     @Override
     public float getPitch() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPitch'");
+        return this.getLocation().getPitch();
     }
 
     @Override
     public float getYaw() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getYaw'");
+        return this.getLocation().getYaw();
     }
 
     @Override
@@ -976,8 +955,7 @@ public class PatchBukkitEntity implements Entity {
 
     @Override
     public @NotNull String getScoreboardEntryName() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getScoreboardEntryName'");
+        return this.name;
     }
 
     @Override

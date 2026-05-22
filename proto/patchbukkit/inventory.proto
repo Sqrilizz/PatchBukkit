@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package patchbukkit.inventory;
+
+import "patchbukkit/common/types.proto";
+import "patchbukkit/itemstack.proto";
+
+option java_multiple_files = true;
+option java_package = "patchbukkit.inventory";
+option java_outer_classname = "InventoryProto";
+
+message GetInventoryRequest {
+  patchbukkit.common.UUID player_uuid = 1;
+}
+
+message GetInventoryResponse {
+  repeated InventorySlot slots = 1;
+  int32 size = 2;
+}
+
+message InventorySlot {
+  int32 slot = 1;
+  patchbukkit.itemstack.ItemStack item = 2;
+}
+
+message SetInventorySlotRequest {
+  patchbukkit.common.UUID player_uuid = 1;
+  int32 slot = 2;
+  patchbukkit.itemstack.ItemStack item = 3;
+}
+
+message SetInventorySlotResponse {
+  bool success = 1;
+}

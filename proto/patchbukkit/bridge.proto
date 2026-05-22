@@ -1,16 +1,25 @@
 syntax = "proto3";
 package patchbukkit.bridge;
 
+option java_multiple_files = true;
+option java_package = "patchbukkit.bridge";
+
 import "google/protobuf/empty.proto";
 import "google/protobuf/wrappers.proto";
 import "patchbukkit/abilities.proto";
 import "patchbukkit/common/types.proto";
 import "patchbukkit/config.proto";
 import "patchbukkit/events/event.proto";
+import "patchbukkit/inventory.proto";
 import "patchbukkit/log.proto";
 import "patchbukkit/message.proto";
 import "patchbukkit/registry.proto";
 import "patchbukkit/sound.proto";
+
+message GetPlayerAddressResponse {
+  string host = 1;
+  uint32 port = 2;
+}
 
 service NativeBridge {
   rpc GetAbilities(patchbukkit.common.UUID) returns (patchbukkit.abilities.Abilities);
@@ -31,4 +40,9 @@ service NativeBridge {
   rpc SendLog(patchbukkit.log.SendLogRequest) returns (google.protobuf.Empty);
 
   rpc GetPatchBukkitConfig(patchbukkit.common.EmptyRequest) returns (patchbukkit.config.GetPatchBukkitConfigResponse);
+
+  rpc GetInventory(patchbukkit.inventory.GetInventoryRequest) returns (patchbukkit.inventory.GetInventoryResponse);
+  rpc SetInventorySlot(patchbukkit.inventory.SetInventorySlotRequest) returns (patchbukkit.inventory.SetInventorySlotResponse);
+
+  rpc GetPlayerAddress(patchbukkit.common.UUID) returns (patchbukkit.bridge.GetPlayerAddressResponse);
 }

@@ -2,6 +2,7 @@ package org.patchbukkit.events;
 
 import org.bukkit.Server;
 import org.bukkit.Warning;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,7 +22,9 @@ import co.aikar.timings.TimedEventExecutor;
 import org.jetbrains.annotations.NotNull;
 import patchbukkit.bridge.NativeBridgeFfi;
 import patchbukkit.events.CallEventRequest;
+import patchbukkit.events.PlayerChatEvent;
 import patchbukkit.events.PlayerJoinEvent;
+import patchbukkit.events.PlayerQuitEvent;
 import patchbukkit.events.RegisterEventRequest;
 
 import java.lang.reflect.Method;
@@ -57,6 +60,29 @@ public class PatchBukkitEventManager {
                             .setJoinMessage(castedEvent.joinMessage().toString())
                             .setPlayerUuid(BridgeUtils.convertUuid(castedEvent.getPlayer().getUniqueId())).build()
                     ).build()
+                );
+                break;
+            case "org.bukkit.event.player.PlayerQuitEvent":
+                var quitEvent = (org.bukkit.event.player.PlayerQuitEvent) event;
+                request.setEvent(
+                    patchbukkit.events.Event.newBuilder().setPlayerQuit(
+                        PlayerQuitEvent.newBuilder()
+                            .setQuitMessage(quitEvent.quitMessage().toString())
+                            .setPlayerUuid(BridgeUtils.convertUuid(quitEvent.getPlayer().getUniqueId())).build()
+                    ).build()
+                );
+                break;
+            case "org.bukkit.event.player.PlayerChatEvent":
+                var chatEvent = (org.bukkit.event.player.PlayerChatEvent) event;
+                PlayerChatEvent.Builder chatBuilder = PlayerChatEvent.newBuilder()
+                    .setMessage(chatEvent.getMessage())
+                    .setFormat(chatEvent.getFormat())
+                    .setPlayerUuid(BridgeUtils.convertUuid(chatEvent.getPlayer().getUniqueId()));
+                for (Player recipient : chatEvent.getRecipients()) {
+                    chatBuilder.addRecipients(BridgeUtils.convertUuid(recipient.getUniqueId()));
+                }
+                request.setEvent(
+                    patchbukkit.events.Event.newBuilder().setPlayerChat(chatBuilder.build()).build()
                 );
                 break;
         }

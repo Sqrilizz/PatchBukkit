@@ -118,6 +118,13 @@ public class PatchBukkitServer implements Server {
     private static final Logger logger = Logger.getLogger("Minecraft");
 
     static {
+        int javaVersion = Runtime.version().feature();
+        if (javaVersion < 21) {
+            throw new RuntimeException(
+                "PatchBukkit requires Java 21 or newer, but found Java " + javaVersion + ". " +
+                "Please update your JDK: https://adoptium.net/"
+            );
+        }
         configureRootLogger();
     }
 
@@ -247,112 +254,71 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public int getMaxPlayers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getMaxPlayers'"
-        );
+        return 20;
     }
 
     @Override
     public void setMaxPlayers(int maxPlayers) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'setMaxPlayers'"
-        );
     }
 
     @Override
     public int getPort() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getPort'"
-        );
+        return 25565;
     }
 
     @Override
     public int getViewDistance() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getViewDistance'"
-        );
+        return 10;
     }
 
     @Override
     public int getSimulationDistance() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getSimulationDistance'"
-        );
+        return 10;
     }
 
     @Override
     public @NotNull String getIp() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getIp'");
+        return "0.0.0.0";
     }
 
     @Override
     public @NotNull String getWorldType() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getWorldType'"
-        );
+        return "default";
     }
 
     @Override
     public boolean getGenerateStructures() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getGenerateStructures'"
-        );
+        return true;
     }
 
     @Override
     public int getMaxWorldSize() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getMaxWorldSize'"
-        );
+        return 29999984;
     }
 
     @Override
     public boolean getAllowEnd() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getAllowEnd'"
-        );
+        return true;
     }
 
     @Override
     public boolean getAllowNether() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getAllowNether'"
-        );
+        return true;
     }
 
     @Override
     public boolean isLoggingIPs() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'isLoggingIPs'"
-        );
+        return true;
     }
 
     @Override
     public @NotNull List<String> getInitialEnabledPacks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getInitialEnabledPacks'"
-        );
+        return Collections.emptyList();
     }
 
     @Override
     public @NotNull List<String> getInitialDisabledPacks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getInitialDisabledPacks'"
-        );
+        return Collections.emptyList();
     }
 
     @Override
@@ -405,74 +371,44 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public boolean hasWhitelist() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'hasWhitelist'"
-        );
+        return false;
     }
 
     @Override
     public void setWhitelist(boolean value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'setWhitelist'"
-        );
     }
 
     @Override
     public boolean isWhitelistEnforced() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'isWhitelistEnforced'"
-        );
+        return false;
     }
 
     @Override
     public void setWhitelistEnforced(boolean value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'setWhitelistEnforced'"
-        );
     }
 
     @Override
     public @NotNull Set<OfflinePlayer> getWhitelistedPlayers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getWhitelistedPlayers'"
-        );
+        return Collections.emptySet();
     }
 
     @Override
     public void reloadWhitelist() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'reloadWhitelist'"
-        );
     }
 
     @Override
     public @NotNull String getUpdateFolder() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getUpdateFolder'"
-        );
+        return "update";
     }
 
     @Override
     public @NotNull File getUpdateFolderFile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getUpdateFolderFile'"
-        );
+        return new File("update");
     }
 
     @Override
     public long getConnectionThrottle() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getConnectionThrottle'"
-        );
+        return 0;
     }
 
     @Override
@@ -539,10 +475,7 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public boolean isTickingWorlds() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'isTickingWorlds'"
-        );
+        return true;
     }
 
     @Override
@@ -718,10 +651,7 @@ public class PatchBukkitServer implements Server {
         @NotNull CommandSender sender,
         @NotNull String commandLine
     ) throws CommandException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'dispatchCommand'"
-        );
+        return this.commandMap.dispatch(sender, commandLine);
     }
 
     @Override
@@ -827,50 +757,31 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public int getSpawnRadius() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getSpawnRadius'"
-        );
+        return 16;
     }
 
     @Override
     public void setSpawnRadius(int value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'setSpawnRadius'"
-        );
     }
 
     @Override
     public boolean isEnforcingSecureProfiles() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'isEnforcingSecureProfiles'"
-        );
+        return true;
     }
 
     @Override
     public boolean isAcceptingTransfers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'isAcceptingTransfers'"
-        );
+        return false;
     }
 
     @Override
     public boolean getHideOnlinePlayers() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getHideOnlinePlayers'"
-        );
+        return false;
     }
 
     @Override
     public boolean getOnlineMode() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getOnlineMode'"
-        );
+        return true;
     }
 
     @Override
@@ -883,18 +794,12 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public boolean getAllowFlight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getAllowFlight'"
-        );
+        return false;
     }
 
     @Override
     public boolean isHardcore() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'isHardcore'"
-        );
+        return false;
     }
 
     @Override
@@ -1043,18 +948,11 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public @NotNull GameMode getDefaultGameMode() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getDefaultGameMode'"
-        );
+        return GameMode.SURVIVAL;
     }
 
     @Override
     public void setDefaultGameMode(@NotNull GameMode mode) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'setDefaultGameMode'"
-        );
     }
 
     @Override
@@ -1200,10 +1098,7 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public int getMaxChainedNeighborUpdates() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getMaxChainedNeighborUpdates'"
-        );
+        return 1000000;
     }
 
     @Override
@@ -1224,46 +1119,31 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public boolean isPrimaryThread() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'isPrimaryThread'"
-        );
+        // JVM worker thread is considered the primary thread for Bukkit API compatibility
+        return Thread.currentThread().getName().contains("jvm-worker");
     }
 
     @Override
     public @NotNull Component motd() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'motd'");
+        return Component.text("A Pumpkin Server");
     }
 
     @Override
     public void motd(@NotNull Component motd) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'motd'");
     }
 
     @Override
     public @Nullable Component shutdownMessage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'shutdownMessage'"
-        );
+        return Component.text("Server shutting down");
     }
 
     @Override
     public @NotNull String getMotd() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getMotd'"
-        );
+        return "A Pumpkin Server";
     }
 
     @Override
     public void setMotd(@NotNull String motd) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'setMotd'"
-        );
     }
 
     @Override
@@ -1276,18 +1156,12 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public @Nullable String getShutdownMessage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getShutdownMessage'"
-        );
+        return "Server shutting down";
     }
 
     @Override
     public @NotNull WarningState getWarningState() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getWarningState'"
-        );
+        return WarningState.DEFAULT;
     }
 
     @Override
@@ -1351,34 +1225,20 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public void setIdleTimeout(int threshold) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'setIdleTimeout'"
-        );
     }
 
     @Override
     public int getIdleTimeout() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getIdleTimeout'"
-        );
+        return 0;
     }
 
     @Override
     public int getPauseWhenEmptyTime() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getPauseWhenEmptyTime'"
-        );
+        return 0;
     }
 
     @Override
     public void setPauseWhenEmptyTime(int seconds) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'setPauseWhenEmptyTime'"
-        );
     }
 
     @Override
@@ -1705,10 +1565,7 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public boolean isStopping() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'isStopping'"
-        );
+        return false;
     }
 
     @Override

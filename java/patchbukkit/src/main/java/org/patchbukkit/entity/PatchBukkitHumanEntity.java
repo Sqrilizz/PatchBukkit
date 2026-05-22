@@ -1,6 +1,7 @@
 package org.patchbukkit.entity;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -104,1243 +105,970 @@ public class PatchBukkitHumanEntity
 
     @Override
     public double getEyeHeight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEyeHeight'");
+        return 1.62;
     }
 
     @Override
     public double getEyeHeight(boolean ignorePose) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEyeHeight'");
+        return 1.62;
     }
 
     @Override
     public @NotNull Location getEyeLocation() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEyeLocation'");
+        return getLocation().add(0, 1.62, 0);
     }
 
     @Override
     public @NotNull List<Block> getLineOfSight(@Nullable Set<Material> transparent, int maxDistance) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getLineOfSight'");
+        return Collections.emptyList();
     }
 
     @Override
     public @NotNull Block getTargetBlock(@Nullable Set<Material> transparent, int maxDistance) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTargetBlock'");
+        return null;
     }
 
     @Override
     public @Nullable Block getTargetBlock(int maxDistance, @NotNull FluidMode fluidMode) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTargetBlock'");
+        return null;
     }
 
     @Override
     public @Nullable BlockFace getTargetBlockFace(int maxDistance, @NotNull FluidMode fluidMode) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTargetBlockFace'");
+        return null;
     }
 
     @Override
     public @Nullable BlockFace getTargetBlockFace(int maxDistance, @NotNull FluidCollisionMode fluidMode) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTargetBlockFace'");
+        return null;
     }
 
     @Override
     public @Nullable TargetBlockInfo getTargetBlockInfo(int maxDistance, @NotNull FluidMode fluidMode) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTargetBlockInfo'");
+        return null;
     }
 
     @Override
     public @Nullable Entity getTargetEntity(int maxDistance, boolean ignoreBlocks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTargetEntity'");
+        return null;
     }
 
     @Override
     public @Nullable TargetEntityInfo getTargetEntityInfo(int maxDistance, boolean ignoreBlocks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTargetEntityInfo'");
+        return null;
     }
 
     @Override
     public @Nullable RayTraceResult rayTraceEntities(int maxDistance, boolean ignoreBlocks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'rayTraceEntities'");
+        return null;
     }
 
     @Override
     public @NotNull List<Block> getLastTwoTargetBlocks(@Nullable Set<Material> transparent, int maxDistance) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getLastTwoTargetBlocks'");
+        return Collections.emptyList();
     }
 
     @Override
     public @Nullable Block getTargetBlockExact(int maxDistance, @NotNull FluidCollisionMode fluidCollisionMode) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTargetBlockExact'");
+        return null;
     }
 
     @Override
     public @Nullable RayTraceResult rayTraceBlocks(double maxDistance, @NotNull FluidCollisionMode fluidCollisionMode) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'rayTraceBlocks'");
+        return null;
     }
 
     @Override
     public int getRemainingAir() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRemainingAir'");
+        return 300;
     }
 
     @Override
     public void setRemainingAir(int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setRemainingAir'");
     }
 
     @Override
     public int getMaximumAir() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMaximumAir'");
+        return 300;
     }
 
     @Override
     public void setMaximumAir(int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setMaximumAir'");
     }
 
     @Override
     public @Nullable ItemStack getItemInUse() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getItemInUse'");
+        return null;
     }
 
     @Override
     public int getItemInUseTicks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getItemInUseTicks'");
+        return 0;
     }
 
     @Override
     public void setItemInUseTicks(int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setItemInUseTicks'");
     }
 
     @Override
     public @NonNegative int getArrowCooldown() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getArrowCooldown'");
+        return 0;
     }
 
     @Override
     public void setArrowCooldown(@NonNegative int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setArrowCooldown'");
     }
 
     @Override
     public @NonNegative int getArrowsInBody() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getArrowsInBody'");
+        return 0;
     }
 
     @Override
     public void setArrowsInBody(@NonNegative int count, boolean fireEvent) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setArrowsInBody'");
     }
 
     @Override
     public @NonNegative int getBeeStingerCooldown() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBeeStingerCooldown'");
+        return 0;
     }
 
     @Override
     public void setBeeStingerCooldown(@NonNegative int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBeeStingerCooldown'");
     }
 
     @Override
     public @NonNegative int getBeeStingersInBody() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBeeStingersInBody'");
+        return 0;
     }
 
     @Override
     public void setBeeStingersInBody(@NonNegative int count) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBeeStingersInBody'");
     }
 
     @Override
     public int getMaximumNoDamageTicks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMaximumNoDamageTicks'");
+        return 20;
     }
 
     @Override
     public void setMaximumNoDamageTicks(int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setMaximumNoDamageTicks'");
     }
 
     @Override
     public double getLastDamage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getLastDamage'");
+        return 0.0;
     }
 
     @Override
     public void setLastDamage(double damage) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setLastDamage'");
     }
 
     @Override
     public int getNoDamageTicks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getNoDamageTicks'");
+        return 0;
     }
 
     @Override
     public void setNoDamageTicks(int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setNoDamageTicks'");
     }
 
     @Override
     public int getNoActionTicks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getNoActionTicks'");
+        return 0;
     }
 
     @Override
     public void setNoActionTicks(int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setNoActionTicks'");
     }
 
     @Override
     public @Nullable Player getKiller() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getKiller'");
+        return null;
     }
 
     @Override
     public void setKiller(@Nullable Player killer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setKiller'");
     }
 
     @Override
     public boolean addPotionEffect(@NotNull PotionEffect effect, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addPotionEffect'");
+        return false;
     }
 
     @Override
     public boolean addPotionEffects(@NotNull Collection<PotionEffect> effects) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addPotionEffects'");
+        return false;
     }
 
     @Override
     public boolean hasPotionEffect(@NotNull PotionEffectType type) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hasPotionEffect'");
+        return false;
     }
 
     @Override
     public @Nullable PotionEffect getPotionEffect(@NotNull PotionEffectType type) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPotionEffect'");
+        return null;
     }
 
     @Override
     public void removePotionEffect(@NotNull PotionEffectType type) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removePotionEffect'");
     }
 
     @Override
     public @NotNull Collection<PotionEffect> getActivePotionEffects() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getActivePotionEffects'");
+        return Collections.emptyList();
     }
 
     @Override
     public boolean clearActivePotionEffects() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'clearActivePotionEffects'");
+        return false;
     }
 
     @Override
     public boolean hasLineOfSight(@NotNull Entity other) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hasLineOfSight'");
+        return true;
     }
 
     @Override
     public boolean hasLineOfSight(@NotNull Location location) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hasLineOfSight'");
+        return true;
     }
 
     @Override
     public boolean getRemoveWhenFarAway() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getRemoveWhenFarAway'");
+        return false;
     }
 
     @Override
     public void setRemoveWhenFarAway(boolean remove) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setRemoveWhenFarAway'");
     }
 
     @Override
     public void setCanPickupItems(boolean pickup) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCanPickupItems'");
     }
 
     @Override
     public boolean getCanPickupItems() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCanPickupItems'");
+        return true;
     }
 
     @Override
     public boolean isLeashed() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isLeashed'");
+        return false;
     }
 
     @Override
     public @NotNull Entity getLeashHolder() throws IllegalStateException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getLeashHolder'");
+        throw new IllegalStateException("Not leashed");
     }
 
     @Override
     public boolean setLeashHolder(@Nullable Entity holder) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setLeashHolder'");
+        return false;
     }
 
     @Override
     public boolean isGliding() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isGliding'");
+        return false;
     }
 
     @Override
     public void setGliding(boolean gliding) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setGliding'");
     }
 
     @Override
     public boolean isSwimming() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isSwimming'");
+        return false;
     }
 
     @Override
     public void setSwimming(boolean swimming) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSwimming'");
     }
 
     @Override
     public boolean isRiptiding() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isRiptiding'");
+        return false;
     }
 
     @Override
     public void setRiptiding(boolean riptiding) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setRiptiding'");
     }
 
     @Override
     public boolean isSleeping() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isSleeping'");
+        return false;
     }
 
     @Override
     public boolean isClimbing() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isClimbing'");
+        return false;
     }
 
     @Override
     public void setAI(boolean ai) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setAI'");
     }
 
     @Override
     public boolean hasAI() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hasAI'");
+        return true;
     }
 
     @Override
     public void attack(@NotNull Entity target) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'attack'");
     }
 
     @Override
     public void swingMainHand() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'swingMainHand'");
     }
 
     @Override
     public void swingOffHand() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'swingOffHand'");
     }
 
     @Override
     public void playHurtAnimation(float yaw) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'playHurtAnimation'");
     }
 
     @Override
     public void setCollidable(boolean collidable) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCollidable'");
     }
 
     @Override
     public boolean isCollidable() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isCollidable'");
+        return true;
     }
 
     @Override
     public @NotNull Set<UUID> getCollidableExemptions() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCollidableExemptions'");
+        return Collections.emptySet();
     }
 
     @Override
     public <T> @Nullable T getMemory(@NotNull MemoryKey<T> memoryKey) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMemory'");
+        return null;
     }
 
     @Override
     public <T> void setMemory(@NotNull MemoryKey<T> memoryKey, @Nullable T memoryValue) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setMemory'");
     }
 
     @Override
     public @Nullable Sound getHurtSound() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHurtSound'");
+        return null;
     }
 
     @Override
     public @Nullable Sound getDeathSound() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDeathSound'");
+        return null;
     }
 
     @Override
     public @NotNull Sound getFallDamageSound(int fallHeight) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFallDamageSound'");
+        return null;
     }
 
     @Override
     public @NotNull Sound getFallDamageSoundSmall() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFallDamageSoundSmall'");
+        return null;
     }
 
     @Override
     public @NotNull Sound getFallDamageSoundBig() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFallDamageSoundBig'");
+        return null;
     }
 
     @Override
     public @NotNull Sound getDrinkingSound(@NotNull ItemStack itemStack) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDrinkingSound'");
+        return null;
     }
 
     @Override
     public @NotNull Sound getEatingSound(@NotNull ItemStack itemStack) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEatingSound'");
+        return null;
     }
 
     @Override
     public boolean canBreatheUnderwater() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'canBreatheUnderwater'");
+        return false;
     }
 
     @Override
     public @NotNull EntityCategory getCategory() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCategory'");
+        return EntityCategory.NONE;
     }
 
     @Override
     public float getSidewaysMovement() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSidewaysMovement'");
+        return 0f;
     }
 
     @Override
     public float getUpwardsMovement() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUpwardsMovement'");
+        return 0f;
     }
 
     @Override
     public float getForwardsMovement() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getForwardsMovement'");
+        return 0f;
     }
 
     @Override
     public void startUsingItem(@NotNull EquipmentSlot hand) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'startUsingItem'");
     }
 
     @Override
     public void completeUsingActiveItem() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'completeUsingActiveItem'");
     }
 
     @Override
     public @NotNull ItemStack getActiveItem() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getActiveItem'");
+        return new ItemStack(Material.AIR);
     }
 
     @Override
     public void clearActiveItem() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'clearActiveItem'");
     }
 
     @Override
     public int getActiveItemRemainingTime() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getActiveItemRemainingTime'");
+        return 0;
     }
 
     @Override
     public void setActiveItemRemainingTime(@Range(from = 0, to = 2147483647) int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setActiveItemRemainingTime'");
     }
 
     @Override
     public boolean hasActiveItem() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hasActiveItem'");
+        return false;
     }
 
     @Override
     public int getActiveItemUsedTime() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getActiveItemUsedTime'");
+        return 0;
     }
 
     @Override
     public @NotNull EquipmentSlot getActiveItemHand() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getActiveItemHand'");
+        return EquipmentSlot.HAND;
     }
 
     @Override
     public boolean isJumping() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isJumping'");
+        return false;
     }
 
     @Override
     public void setJumping(boolean jumping) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setJumping'");
     }
 
     @Override
     public void playPickupItemAnimation(@NotNull Item item, int quantity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'playPickupItemAnimation'");
     }
 
     @Override
     public float getHurtDirection() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHurtDirection'");
+        return 0f;
     }
 
     @Override
     public void knockback(double strength, double directionX, double directionZ) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'knockback'");
     }
 
     @Override
     public void broadcastSlotBreak(@NotNull EquipmentSlot slot) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'broadcastSlotBreak'");
     }
 
     @Override
     public void broadcastSlotBreak(@NotNull EquipmentSlot slot, @NotNull Collection<Player> players) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'broadcastSlotBreak'");
     }
 
     @Override
     public @NotNull ItemStack damageItemStack(@NotNull ItemStack stack, int amount) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'damageItemStack'");
+        return stack;
     }
 
     @Override
     public void damageItemStack(@NotNull EquipmentSlot slot, int amount) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'damageItemStack'");
     }
 
     @Override
     public float getBodyYaw() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBodyYaw'");
+        return getLocation().getYaw();
     }
 
     @Override
     public void setBodyYaw(float bodyYaw) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setBodyYaw'");
     }
 
     @Override
     public boolean canUseEquipmentSlot(@NotNull EquipmentSlot slot) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'canUseEquipmentSlot'");
+        return true;
     }
 
     @Override
     public @NotNull CombatTracker getCombatTracker() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCombatTracker'");
+        return null;
     }
 
     @Override
     public void setWaypointStyle(@Nullable Key key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setWaypointStyle'");
     }
 
     @Override
     public void setWaypointColor(@Nullable Color color) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setWaypointColor'");
     }
 
     @Override
     public @NotNull Key getWaypointStyle() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWaypointStyle'");
+        return Key.key("minecraft", "air");
     }
 
     @Override
     public @Nullable Color getWaypointColor() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWaypointColor'");
+        return null;
     }
 
     @Override
     public @Nullable AttributeInstance getAttribute(@NotNull Attribute attribute) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAttribute'");
+        return null;
     }
 
     @Override
     public void registerAttribute(@NotNull Attribute attribute) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'registerAttribute'");
     }
 
     @Override
     public void damage(double amount) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'damage'");
     }
 
     @Override
     public void damage(double amount, @Nullable Entity source) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'damage'");
     }
 
     @Override
     public void damage(double amount, @NotNull DamageSource damageSource) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'damage'");
     }
 
     @Override
     public double getHealth() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHealth'");
+        return 20.0;
     }
 
     @Override
     public void setHealth(double health) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setHealth'");
     }
 
     @Override
     public void heal(double amount, @NotNull RegainReason reason) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'heal'");
     }
 
     @Override
     public double getAbsorptionAmount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAbsorptionAmount'");
+        return 0.0;
     }
 
     @Override
     public void setAbsorptionAmount(double amount) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setAbsorptionAmount'");
     }
 
     @Override
     public double getMaxHealth() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMaxHealth'");
+        return 20.0;
     }
 
     @Override
     public void setMaxHealth(double health) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setMaxHealth'");
     }
 
     @Override
     public void resetMaxHealth() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'resetMaxHealth'");
     }
 
     @Override
     public <T extends Projectile> @NotNull T launchProjectile(@NotNull Class<? extends T> projectile,
             @Nullable Vector velocity, @Nullable Consumer<? super T> function) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'launchProjectile'");
+        return null;
     }
 
     @Override
     public TriState getFrictionState() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFrictionState'");
+        return TriState.NOT_SET;
     }
 
     @Override
     public void setFrictionState(TriState state) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFrictionState'");
     }
 
     @Override
     public EntityEquipment getEquipment() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEquipment'");
+        return null;
     }
 
     @Override
     public PlayerInventory getInventory() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getInventory'");
+        return new org.patchbukkit.inventory.PatchBukkitPlayerInventory(this);
     }
 
     @Override
     public Inventory getEnderChest() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEnderChest'");
+        return null;
     }
 
     @Override
     public MainHand getMainHand() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMainHand'");
+        return MainHand.RIGHT;
     }
 
     @Override
     public boolean setWindowProperty(Property prop, int value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setWindowProperty'");
+        return false;
     }
 
     @Override
     public int getEnchantmentSeed() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEnchantmentSeed'");
+        return 0;
     }
 
     @Override
     public void setEnchantmentSeed(int seed) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setEnchantmentSeed'");
     }
 
     @Override
     public InventoryView getOpenInventory() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getOpenInventory'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable InventoryView openInventory(Inventory inventory) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openInventory'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable InventoryView openWorkbench(
             @org.jspecify.annotations.Nullable Location location, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openWorkbench'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable InventoryView openEnchanting(
             @org.jspecify.annotations.Nullable Location location, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openEnchanting'");
+        return null;
     }
 
     @Override
     public void openInventory(InventoryView inventory) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openInventory'");
     }
 
     @Override
     public @org.jspecify.annotations.Nullable InventoryView openMerchant(Merchant merchant, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openMerchant'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable InventoryView openAnvil(
             @org.jspecify.annotations.Nullable Location location, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openAnvil'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable InventoryView openCartographyTable(
             @org.jspecify.annotations.Nullable Location location, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openCartographyTable'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable InventoryView openGrindstone(
             @org.jspecify.annotations.Nullable Location location, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openGrindstone'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable InventoryView openLoom(
             @org.jspecify.annotations.Nullable Location location, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openLoom'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable InventoryView openSmithingTable(
             @org.jspecify.annotations.Nullable Location location, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openSmithingTable'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable InventoryView openStonecutter(
             @org.jspecify.annotations.Nullable Location location, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openStonecutter'");
+        return null;
     }
 
     @Override
     public void closeInventory(Reason reason) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'closeInventory'");
     }
 
     @Override
     public ItemStack getItemInHand() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getItemInHand'");
+        return getInventory().getItemInMainHand();
     }
 
     @Override
     public void setItemInHand(@org.jspecify.annotations.Nullable ItemStack item) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setItemInHand'");
+        getInventory().setItemInMainHand(item);
     }
 
     @Override
     public ItemStack getItemOnCursor() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getItemOnCursor'");
+        return null;
     }
 
     @Override
     public void setItemOnCursor(@org.jspecify.annotations.Nullable ItemStack item) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setItemOnCursor'");
     }
 
     @Override
     public boolean hasCooldown(Material material) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hasCooldown'");
+        return false;
     }
 
     @Override
     public int getCooldown(Material material) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCooldown'");
+        return 0;
     }
 
     @Override
     public void setHurtDirection(float hurtDirection) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setHurtDirection'");
     }
 
     @Override
     public boolean isDeeplySleeping() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isDeeplySleeping'");
+        return false;
     }
 
     @Override
     public boolean hasCooldown(ItemStack item) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hasCooldown'");
+        return false;
     }
 
     @Override
     public int getCooldown(ItemStack item) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCooldown'");
+        return 0;
     }
 
     @Override
     public void setCooldown(ItemStack item, int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCooldown'");
     }
 
     @Override
     public int getCooldown(Key key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getCooldown'");
+        return 0;
     }
 
     @Override
     public void setCooldown(Key key, int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCooldown'");
     }
 
     @Override
     public int getSleepTicks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSleepTicks'");
+        return 0;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable Location getPotentialRespawnLocation() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPotentialRespawnLocation'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable FishHook getFishHook() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFishHook'");
+        return null;
     }
 
     @Override
     public boolean sleep(Location location, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sleep'");
+        return false;
     }
 
     @Override
     public void wakeup(boolean setSpawnLocation) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'wakeup'");
     }
 
     @Override
     public void startRiptideAttack(int duration, float attackStrength,
             @org.jspecify.annotations.Nullable ItemStack attackItem) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'startRiptideAttack'");
     }
 
     @Override
     public Location getBedLocation() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBedLocation'");
+        return null;
     }
 
     @Override
     public GameMode getGameMode() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getGameMode'");
+        return GameMode.SURVIVAL;
     }
 
     @Override
     public void setGameMode(GameMode mode) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setGameMode'");
     }
 
     @Override
     public boolean isBlocking() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isBlocking'");
+        return false;
     }
 
     @Override
     public boolean isHandRaised() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isHandRaised'");
+        return false;
     }
 
     @Override
     public int getExpToLevel() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getExpToLevel'");
+        return 0;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable Entity releaseLeftShoulderEntity() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'releaseLeftShoulderEntity'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable Entity releaseRightShoulderEntity() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'releaseRightShoulderEntity'");
+        return null;
     }
 
     @Override
     public float getAttackCooldown() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAttackCooldown'");
+        return 1f;
     }
 
     @Override
     public int discoverRecipes(Collection<NamespacedKey> recipes) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'discoverRecipes'");
+        return 0;
     }
 
     @Override
     public int undiscoverRecipes(Collection<NamespacedKey> recipes) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'undiscoverRecipes'");
+        return 0;
     }
 
     @Override
     public boolean hasDiscoveredRecipe(NamespacedKey recipe) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hasDiscoveredRecipe'");
+        return false;
     }
 
     @Override
     public Set<NamespacedKey> getDiscoveredRecipes() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDiscoveredRecipes'");
+        return Collections.emptySet();
     }
 
     @Override
     public @org.jspecify.annotations.Nullable Entity getShoulderEntityLeft() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getShoulderEntityLeft'");
+        return null;
     }
 
     @Override
     public void setShoulderEntityLeft(@org.jspecify.annotations.Nullable Entity entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setShoulderEntityLeft'");
     }
 
     @Override
     public @org.jspecify.annotations.Nullable Entity getShoulderEntityRight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getShoulderEntityRight'");
+        return null;
     }
 
     @Override
     public void setShoulderEntityRight(@org.jspecify.annotations.Nullable Entity entity) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setShoulderEntityRight'");
     }
 
     @Override
     public void openSign(Sign sign, Side side) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'openSign'");
     }
 
     @Override
     public boolean dropItem(boolean dropAll) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dropItem'");
+        return false;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable Item dropItem(int slot, int amount, boolean throwRandomly,
             @org.jspecify.annotations.Nullable Consumer<Item> entityOperation) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dropItem'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable Item dropItem(EquipmentSlot slot, int amount, boolean throwRandomly,
             @org.jspecify.annotations.Nullable Consumer<Item> entityOperation) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dropItem'");
+        return null;
     }
 
     @Override
     public @org.jspecify.annotations.Nullable Item dropItem(ItemStack itemStack, boolean throwRandomly,
             @org.jspecify.annotations.Nullable Consumer<Item> entityOperation) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dropItem'");
+        return null;
     }
 
     @Override
     public float getExhaustion() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getExhaustion'");
+        return 0f;
     }
 
     @Override
     public void setExhaustion(float value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setExhaustion'");
     }
 
     @Override
     public float getSaturation() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSaturation'");
+        return 5f;
     }
 
     @Override
     public void setSaturation(float value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSaturation'");
     }
 
     @Override
     public int getFoodLevel() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFoodLevel'");
+        return 20;
     }
 
     @Override
     public void setFoodLevel(int value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFoodLevel'");
     }
 
     @Override
     public int getSaturatedRegenRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSaturatedRegenRate'");
+        return 10;
     }
 
     @Override
     public void setSaturatedRegenRate(int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSaturatedRegenRate'");
     }
 
     @Override
     public int getUnsaturatedRegenRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUnsaturatedRegenRate'");
+        return 80;
     }
 
     @Override
     public void setUnsaturatedRegenRate(int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setUnsaturatedRegenRate'");
     }
 
     @Override
     public int getStarvationRate() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getStarvationRate'");
+        return 80;
     }
 
     @Override
     public void setStarvationRate(int ticks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setStarvationRate'");
     }
 
     @Override
     public @org.jspecify.annotations.Nullable Location getLastDeathLocation() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getLastDeathLocation'");
+        return null;
     }
 
     @Override
     public void setLastDeathLocation(@org.jspecify.annotations.Nullable Location location) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setLastDeathLocation'");
     }
 
     @Override
     public @org.jspecify.annotations.Nullable Firework fireworkBoost(ItemStack fireworkItemStack) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fireworkBoost'");
+        return null;
     }}

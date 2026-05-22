@@ -98,42 +98,33 @@ public class PatchBukkitWorld
 
     @Override
     public int getEntityCount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getEntityCount'"
-        );
+        return 0;
     }
 
     @Override
     public int getTileEntityCount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getTileEntityCount'"
-        );
+        return 0;
     }
 
     @Override
     public int getTickableTileEntityCount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getTickableTileEntityCount'"
-        );
+        return 0;
     }
 
     @Override
     public int getChunkCount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getChunkCount'"
-        );
+        return 0;
     }
 
     @Override
     public int getPlayerCount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getPlayerCount'"
-        );
+        int count = 0;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getWorld().equals(this)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override
@@ -149,9 +140,9 @@ public class PatchBukkitWorld
 
     @Override
     public @NotNull Block getBlockAt(int x, int y, int z) {
-        // TODO Auto-generated method stub
+        // TODO: Requires FFI to Pumpkin for actual block data
         throw new UnsupportedOperationException(
-            "Unimplemented method 'getBlockAt'"
+            "Unimplemented method 'getBlockAt' - needs FFI to Pumpkin"
         );
     }
 
@@ -590,10 +581,7 @@ public class PatchBukkitWorld
 
     @Override
     public @NotNull Location getSpawnLocation() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getSpawnLocation'"
-        );
+        return new Location(this, 0, 64, 0);
     }
 
     @Override
@@ -614,10 +602,7 @@ public class PatchBukkitWorld
 
     @Override
     public long getTime() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getTime'"
-        );
+        return 0;
     }
 
     @Override
@@ -1078,10 +1063,7 @@ public class PatchBukkitWorld
 
     @Override
     public @NotNull Difficulty getDifficulty() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getDifficulty'"
-        );
+        return Difficulty.NORMAL;
     }
 
     @Override
@@ -1594,10 +1576,7 @@ public class PatchBukkitWorld
 
     @Override
     public @NotNull Environment getEnvironment() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getEnvironment'"
-        );
+        return Environment.NORMAL;
     }
 
     @Override
