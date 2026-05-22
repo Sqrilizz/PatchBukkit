@@ -1,7 +1,10 @@
 use crate::java::native_callbacks::CALLBACK_CONTEXT;
 use crate::proto::patchbukkit::{
     common::Uuid,
-    inventory::{GetInventoryRequest, GetInventoryResponse, SetInventorySlotRequest, SetInventorySlotResponse},
+    inventory::{
+        GetInventoryRequest, GetInventoryResponse, SetInventorySlotRequest,
+        SetInventorySlotResponse,
+    },
 };
 
 pub fn ffi_native_bridge_get_inventory_impl(
