@@ -47,12 +47,9 @@ impl PatchBukkitEvent for pumpkin::plugin::player::player_join::PlayerJoinEvent 
     }
 
     fn apply_modifications(&mut self, server: &Arc<Server>, data: Data) -> Option<()> {
-        match data {
-            Data::PlayerJoin(event) => {
-                self.join_message = serde_json::from_str(&event.join_message).ok()?;
-                server.get_player_by_uuid(uuid::Uuid::from_str(&event.player_uuid?.value).ok()?)?;
-            }
-            _ => {}
+        if let Data::PlayerJoin(event) = data {
+            self.join_message = serde_json::from_str(&event.join_message).ok()?;
+            server.get_player_by_uuid(uuid::Uuid::from_str(&event.player_uuid?.value).ok()?)?;
         }
 
         Some(())
