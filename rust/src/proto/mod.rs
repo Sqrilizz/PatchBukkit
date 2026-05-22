@@ -38,6 +38,10 @@ pub mod patchbukkit {
     pub mod itemstack {
         include!(concat!(env!("OUT_DIR"), "/patchbukkit.itemstack.rs"));
     }
+
+    pub mod inventory {
+        include!(concat!(env!("OUT_DIR"), "/patchbukkit.inventory.rs"));
+    }
 }
 
 include!(concat!(env!("OUT_DIR"), "/ffi_init.rs"));

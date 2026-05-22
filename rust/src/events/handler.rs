@@ -52,6 +52,7 @@ impl PatchBukkitEvent for pumpkin::plugin::player::player_join::PlayerJoinEvent 
                 self.join_message = serde_json::from_str(&event.join_message).ok()?;
                 server.get_player_by_uuid(uuid::Uuid::from_str(&event.player_uuid?.value).ok()?)?;
             }
+            _ => {}
         }
 
         Some(())

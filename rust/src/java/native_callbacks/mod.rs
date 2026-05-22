@@ -38,6 +38,9 @@ pub use config::*;
 
 pub mod itemstack;
 
+pub mod inventory;
+pub use inventory::*;
+
 static CALLBACK_CONTEXT: OnceLock<CallbackContext> = OnceLock::new();
 
 struct CallbackContext {
