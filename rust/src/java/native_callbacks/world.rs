@@ -217,3 +217,38 @@ pub fn ffi_native_bridge_is_chunk_loaded_impl(
         loaded: world.level.is_chunk_loaded(&position),
     })
 }
+
+pub fn ffi_native_bridge_get_world_statistics_impl(
+    request: crate::proto::patchbukkit::world::GetWorldStatisticsRequest,
+) -> Option<crate::proto::patchbukkit::world::GetWorldStatisticsResponse> {
+    let ctx = CALLBACK_CONTEXT.get()?;
+    let world_uuid = uuid::Uuid::parse_str(&request.world_uuid?.value).ok()?;
+    let world = ctx
+        .plugin_context
+        .server
+        .worlds
+        .load_full()
+        .iter()
+        .find(|world| world.uuid == world_uuid)
+        .cloned()?;
+    let tile_entity_count = world
+        .block_entities
+        .iter()
+        .map(|chunk| chunk.value().len())
+        .sum::<usize>();
+    let tickable_tile_entity_count = world
+        .active_chunks
+        .load()
+        .iter()
+        .filter_map(|chunk_pos| world.block_entities.get(chunk_pos))
+        .map(|chunk| chunk.value().len())
+        .sum::<usize>();
+    Some(
+        crate::proto::patchbukkit::world::GetWorldStatisticsResponse {
+            player_count: world.players.load().len() as i32,
+            entity_count: (world.players.load().len() + world.entities.load().len()) as i32,
+            tile_entity_count: tile_entity_count as i32,
+            tickable_tile_entity_count: tickable_tile_entity_count as i32,
+        },
+    )
+}

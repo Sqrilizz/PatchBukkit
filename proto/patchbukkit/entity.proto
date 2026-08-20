@@ -66,6 +66,14 @@ message IsOpResponse {
   bool is_op = 1;
 }
 
+message EntityBoundingBoxResponse {
+  double min_x = 1;
+  double min_y = 2;
+  double min_z = 3;
+  double max_x = 4;
+  double max_y = 5;
+  double max_z = 6;
+}
 
 
 

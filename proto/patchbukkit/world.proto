@@ -100,3 +100,13 @@ message IsChunkLoadedResponse {
   bool loaded = 1;
 }
 
+message GetWorldStatisticsRequest {
+  patchbukkit.common.UUID world_uuid = 1;
+}
+
+message GetWorldStatisticsResponse {
+  int32 player_count = 1;
+  int32 entity_count = 2;
+  int32 tile_entity_count = 3;
+  int32 tickable_tile_entity_count = 4;
+}

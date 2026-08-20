@@ -32,6 +32,7 @@ service NativeBridge {
   rpc IsOnGround(patchbukkit.common.UUID) returns (patchbukkit.entity.IsOnGroundResponse);
   rpc GetPlayerLocale(patchbukkit.common.UUID) returns (patchbukkit.entity.GetPlayerLocaleResponse);
   rpc IsOp(patchbukkit.common.UUID) returns (patchbukkit.entity.IsOpResponse);
+  rpc GetEntityBoundingBox(patchbukkit.common.UUID) returns (patchbukkit.entity.EntityBoundingBoxResponse);
 
   rpc GetPlayerInventory(patchbukkit.common.UUID) returns (patchbukkit.itemstack.GetPlayerInventoryResponse);
   rpc SetPlayerInventorySlot(patchbukkit.itemstack.SetPlayerInventorySlotRequest) returns (google.protobuf.Empty);
@@ -67,4 +68,5 @@ service NativeBridge {
   rpc GetWorldInfo(patchbukkit.world.GetWorldInfoRequest) returns (patchbukkit.world.GetWorldInfoResponse);
   rpc GetLoadedChunks(patchbukkit.world.GetLoadedChunksRequest) returns (patchbukkit.world.GetLoadedChunksResponse);
   rpc IsChunkLoaded(patchbukkit.world.IsChunkLoadedRequest) returns (patchbukkit.world.IsChunkLoadedResponse);
+  rpc GetWorldStatistics(patchbukkit.world.GetWorldStatisticsRequest) returns (patchbukkit.world.GetWorldStatisticsResponse);
 }

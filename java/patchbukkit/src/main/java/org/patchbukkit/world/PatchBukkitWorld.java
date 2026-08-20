@@ -39,6 +39,7 @@ import patchbukkit.bridge.NativeBridgeFfi;
 import patchbukkit.world.GetBlockDataRequest;
 import patchbukkit.world.GetLoadedChunksRequest;
 import patchbukkit.world.GetWorldInfoRequest;
+import patchbukkit.world.GetWorldStatisticsRequest;
 import patchbukkit.world.IsChunkLoadedRequest;
 import patchbukkit.world.SetBlockDataRequest;
 import patchbukkit.world.SpawnParticleRequest;
@@ -116,26 +117,17 @@ public class PatchBukkitWorld
 
     @Override
     public int getEntityCount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getEntityCount'"
-        );
+        return getStatistics().getEntityCount();
     }
 
     @Override
     public int getTileEntityCount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getTileEntityCount'"
-        );
+        return getStatistics().getTileEntityCount();
     }
 
     @Override
     public int getTickableTileEntityCount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getTickableTileEntityCount'"
-        );
+        return getStatistics().getTickableTileEntityCount();
     }
 
     @Override
@@ -145,10 +137,7 @@ public class PatchBukkitWorld
 
     @Override
     public int getPlayerCount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getPlayerCount'"
-        );
+        return getStatistics().getPlayerCount();
     }
 
     @Override
@@ -1651,6 +1640,13 @@ public class PatchBukkitWorld
 
     public int getHeight() {
         return getMaxHeight() - getMinHeight();
+    }
+
+    private patchbukkit.world.GetWorldStatisticsResponse getStatistics() {
+        var response = NativeBridgeFfi.getWorldStatistics(GetWorldStatisticsRequest.newBuilder()
+            .setWorldUuid(BridgeUtils.convertUuid(this.uuid))
+            .build());
+        return response != null ? response : patchbukkit.world.GetWorldStatisticsResponse.getDefaultInstance();
     }
 
     @Override

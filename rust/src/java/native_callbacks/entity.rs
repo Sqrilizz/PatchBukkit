@@ -1,4 +1,7 @@
-use pumpkin::entity::EntityBase;
+use pumpkin::{
+    command::args::entities::{EntitySelectorType, TargetSelector},
+    entity::EntityBase,
+};
 
 use crate::{
     java::native_callbacks::{CALLBACK_CONTEXT, utils::with_player},
@@ -170,4 +173,30 @@ pub fn ffi_native_bridge_is_op_impl(
     });
 
     Some(crate::proto::patchbukkit::entity::IsOpResponse { is_op })
+}
+
+pub fn ffi_native_bridge_get_entity_bounding_box_impl(
+    request: Uuid,
+) -> Option<crate::proto::patchbukkit::entity::EntityBoundingBoxResponse> {
+    let ctx = CALLBACK_CONTEXT.get()?;
+    let uuid = uuid::Uuid::parse_str(&request.value).ok()?;
+    let entity = ctx
+        .plugin_context
+        .server
+        .select_entities(&TargetSelector::new(EntitySelectorType::Uuid(uuid)), None)
+        .into_iter()
+        .next()?
+        .get_entity()
+        .bounding_box
+        .load();
+    Some(
+        crate::proto::patchbukkit::entity::EntityBoundingBoxResponse {
+            min_x: entity.min.x,
+            min_y: entity.min.y,
+            min_z: entity.min.z,
+            max_x: entity.max.x,
+            max_y: entity.max.y,
+            max_z: entity.max.z,
+        },
+    )
 }

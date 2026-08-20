@@ -320,20 +320,21 @@ public class PatchBukkitEntity implements Entity {
 
     @Override
     public double getHeight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getHeight'");
+        var box = getBoundingBox();
+        return box.getHeight();
     }
 
     @Override
     public double getWidth() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getWidth'");
+        var box = getBoundingBox();
+        return Math.max(box.getWidthX(), box.getWidthZ());
     }
 
     @Override
     public @NotNull BoundingBox getBoundingBox() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getBoundingBox'");
+        var box = NativeBridgeFfi.getEntityBoundingBox(BridgeUtils.convertUuid(this.uuid));
+        if (box == null) return BoundingBox.of(getLocation(), 0, 0, 0);
+        return new BoundingBox(box.getMinX(), box.getMinY(), box.getMinZ(), box.getMaxX(), box.getMaxY(), box.getMaxZ());
     }
 
     @Override
