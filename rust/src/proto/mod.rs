@@ -19,6 +19,10 @@ pub mod patchbukkit {
         include!(concat!(env!("OUT_DIR"), "/patchbukkit.message.rs"));
     }
 
+    pub mod player {
+        include!(concat!(env!("OUT_DIR"), "/patchbukkit.player.rs"));
+    }
+
     pub mod registry {
         include!(concat!(env!("OUT_DIR"), "/patchbukkit.registry.rs"));
     }

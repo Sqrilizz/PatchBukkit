@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package patchbukkit.player;
+
+import "patchbukkit/common/types.proto";
+
+option java_multiple_files = true;
+option java_package = "patchbukkit.player";
+
+enum PlayerTitleMode {
+  PLAYER_TITLE_MODE_TITLE = 0;
+  PLAYER_TITLE_MODE_SUBTITLE = 1;
+  PLAYER_TITLE_MODE_ACTION_BAR = 2;
+}
+
+message SendPlayerTitleRequest {
+  patchbukkit.common.UUID player_uuid = 1;
+  string component_json = 2;
+  PlayerTitleMode mode = 3;
+}
+
+message SetPlayerTitleTimesRequest {
+  patchbukkit.common.UUID player_uuid = 1;
+  int32 fade_in = 2;
+  int32 stay = 3;
+  int32 fade_out = 4;
+}
+
+message ClearPlayerTitleRequest {
+  patchbukkit.common.UUID player_uuid = 1;
+  bool reset = 2;
+}
+
+message SendResourcePackRequest {
+  patchbukkit.common.UUID player_uuid = 1;
+  patchbukkit.common.UUID pack_uuid = 2;
+  string url = 3;
+  string hash = 4;
+  string prompt_json = 5;
+  bool force = 6;
+}
+
+message RemoveResourcePackRequest {
+  patchbukkit.common.UUID player_uuid = 1;
+  patchbukkit.common.UUID pack_uuid = 2;
+}

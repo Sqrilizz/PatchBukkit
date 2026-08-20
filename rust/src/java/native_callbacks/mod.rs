@@ -21,6 +21,9 @@ pub use location::*;
 pub mod message;
 pub use message::*;
 
+pub mod player;
+pub use player::*;
+
 pub mod registry;
 pub use registry::*;
 
@@ -72,6 +75,10 @@ pub fn init_callback_context(
     CALLBACK_CONTEXT
         .set(context)
         .map_err(|_| anyhow::anyhow!("Failed to set callback context"))?;
+    let context = CALLBACK_CONTEXT
+        .get()
+        .expect("callback context initialized");
+    events::register_internal_events(&context.plugin_context, context.command_tx.clone());
     Ok(())
 }
 

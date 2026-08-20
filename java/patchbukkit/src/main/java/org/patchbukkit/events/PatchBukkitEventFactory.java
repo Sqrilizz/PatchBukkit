@@ -21,6 +21,7 @@ import patchbukkit.events.PlayerJoinEvent;
 import patchbukkit.events.PlayerInteractEntityEvent;
 import patchbukkit.events.PlayerMoveEvent;
 import patchbukkit.events.PlayerQuitEvent;
+import patchbukkit.events.PlayerResourcePackStatusEvent;
 import patchbukkit.events.PlayerToggleFlightEvent;
 import patchbukkit.events.PlayerToggleSneakEvent;
 import patchbukkit.events.PlayerToggleSprintEvent;
@@ -268,6 +269,14 @@ public class PatchBukkitEventFactory {
                 if (player == null) yield null;
                 yield new org.bukkit.event.player.AsyncPlayerChatEvent(true, player, chatEvent.getMessage(), new java.util.HashSet<>(Bukkit.getOnlinePlayers()));
             }
+            case PLAYER_RESOURCE_PACK_STATUS -> {
+                PlayerResourcePackStatusEvent packEvent = event.getPlayerResourcePackStatus();
+                Player player = getPlayer(packEvent.getPlayerUuid().getValue());
+                if (player == null) yield null;
+                org.bukkit.event.player.PlayerResourcePackStatusEvent.Status status = org.bukkit.event.player.PlayerResourcePackStatusEvent.Status.valueOf(packEvent.getStatus());
+                if (player instanceof org.patchbukkit.entity.PatchBukkitPlayer patchPlayer) patchPlayer.setResourcePackStatus(status);
+                yield new org.bukkit.event.player.PlayerResourcePackStatusEvent(player, org.patchbukkit.bridge.BridgeUtils.convertUuid(packEvent.getPackUuid()), status);
+            }
             case DATA_NOT_SET -> {
                 LOGGER.warning("EventFactory: Received Event with no data");
                 yield null;
@@ -415,6 +424,14 @@ public class PatchBukkitEventFactory {
                     .setPlayerUuid(UUID.newBuilder().setValue(chatEvent.getPlayer().getUniqueId().toString()).build())
                     .setMessage(chatEvent.getMessage())
                     .setFormat(chatEvent.getFormat())
+                    .build()
+            );
+        } else if (event instanceof org.bukkit.event.player.PlayerResourcePackStatusEvent packEvent) {
+            eventBuilder.setPlayerResourcePackStatus(
+                PlayerResourcePackStatusEvent.newBuilder()
+                    .setPlayerUuid(UUID.newBuilder().setValue(packEvent.getPlayer().getUniqueId().toString()).build())
+                    .setPackUuid(UUID.newBuilder().setValue(packEvent.getID().toString()).build())
+                    .setStatus(packEvent.getStatus().name())
                     .build()
             );
         }

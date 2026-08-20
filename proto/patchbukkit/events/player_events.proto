@@ -65,4 +65,9 @@ message PlayerInteractEntityEvent {
   bool is_sneaking = 4;
 }
 
+message PlayerResourcePackStatusEvent {
+  patchbukkit.common.UUID player_uuid = 1;
+  patchbukkit.common.UUID pack_uuid = 2;
+  string status = 3;
+}
 

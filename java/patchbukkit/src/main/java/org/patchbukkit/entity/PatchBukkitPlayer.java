@@ -7,6 +7,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.nio.charset.StandardCharsets;
 
 import org.bukkit.BanEntry;
 import org.bukkit.Chunk;
@@ -68,6 +69,8 @@ import io.papermc.paper.entity.PlayerGiveResult;
 import io.papermc.paper.math.Position;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.util.TriState;
 import net.md_5.bungee.api.chat.BaseComponent;
 import patchbukkit.bridge.NativeBridgeFfi;
@@ -75,6 +78,12 @@ import patchbukkit.message.SendMessageRequest;
 import patchbukkit.abilities.SetAbilitiesRequest;
 import patchbukkit.sound.PlayerEntityPlaySoundRequest;
 import patchbukkit.sound.PlayerPlaySoundRequest;
+import patchbukkit.player.ClearPlayerTitleRequest;
+import patchbukkit.player.PlayerTitleMode;
+import patchbukkit.player.RemoveResourcePackRequest;
+import patchbukkit.player.SendPlayerTitleRequest;
+import patchbukkit.player.SendResourcePackRequest;
+import patchbukkit.player.SetPlayerTitleTimesRequest;
 
 @SuppressWarnings({ "deprecation", "removal", "unchecked" })
 public class PatchBukkitPlayer
@@ -82,9 +91,33 @@ public class PatchBukkitPlayer
     implements Player {
 
     private final Map<UUID, Set<WeakReference<Plugin>>> invertedVisibilityEntities = new HashMap<>();
+    private volatile Status resourcePackStatus;
 
     public PatchBukkitPlayer(UUID uuid, String name) {
         super(uuid, name);
+    }
+
+    public void setResourcePackStatus(Status status) {
+        resourcePackStatus = status;
+    }
+
+    private void sendTitleComponent(Component component, PlayerTitleMode mode) {
+        sendTitleJson(GsonComponentSerializer.gson().serialize(component), mode);
+    }
+
+    private void sendTitleJson(String componentJson, PlayerTitleMode mode) {
+        NativeBridgeFfi.sendPlayerTitle(SendPlayerTitleRequest.newBuilder().setPlayerUuid(BridgeUtils.convertUuid(uuid)).setComponentJson(componentJson).setMode(mode).build());
+    }
+
+    private void clearTitle(boolean reset) {
+        NativeBridgeFfi.clearPlayerTitle(ClearPlayerTitleRequest.newBuilder().setPlayerUuid(BridgeUtils.convertUuid(uuid)).setReset(reset).build());
+    }
+
+    private void sendResourcePack(UUID id, String url, byte[] hash, Component prompt, boolean force) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(url);
+        if (hash != null && hash.length != 20) throw new IllegalArgumentException("Resource pack hash must be 20 bytes");
+        NativeBridgeFfi.sendResourcePack(SendResourcePackRequest.newBuilder().setPlayerUuid(BridgeUtils.convertUuid(uuid)).setPackUuid(BridgeUtils.convertUuid(id)).setUrl(url).setHash(hash == null ? "" : HexFormat.of().formatHex(hash)).setPromptJson(prompt == null ? "" : GsonComponentSerializer.gson().serialize(prompt)).setForce(force).build());
     }
 
     @Override
@@ -958,20 +991,17 @@ public class PatchBukkitPlayer
 
     @Override
     public void sendActionBar(String message) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sendActionBar'");
+        sendTitleComponent(LegacyComponentSerializer.legacySection().deserialize(message), PlayerTitleMode.PLAYER_TITLE_MODE_ACTION_BAR);
     }
 
     @Override
     public void sendActionBar(char alternateChar, String message) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sendActionBar'");
+        sendTitleComponent(LegacyComponentSerializer.legacy(alternateChar).deserialize(message), PlayerTitleMode.PLAYER_TITLE_MODE_ACTION_BAR);
     }
 
     @Override
     public void sendActionBar(BaseComponent... message) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sendActionBar'");
+        sendTitleJson(net.md_5.bungee.chat.ComponentSerializer.toString(message), PlayerTitleMode.PLAYER_TITLE_MODE_ACTION_BAR);
     }
 
     @Override
@@ -990,66 +1020,58 @@ public class PatchBukkitPlayer
 
     @Override
     public void setTitleTimes(int fadeInTicks, int stayTicks, int fadeOutTicks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setTitleTimes'");
+        NativeBridgeFfi.setPlayerTitleTimes(SetPlayerTitleTimesRequest.newBuilder().setPlayerUuid(BridgeUtils.convertUuid(uuid)).setFadeIn(fadeInTicks).setStay(stayTicks).setFadeOut(fadeOutTicks).build());
     }
 
     @Override
     public void setSubtitle(BaseComponent[] subtitle) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSubtitle'");
+        sendTitleJson(net.md_5.bungee.chat.ComponentSerializer.toString(subtitle), PlayerTitleMode.PLAYER_TITLE_MODE_SUBTITLE);
     }
 
     @Override
     public void setSubtitle(BaseComponent subtitle) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSubtitle'");
+        setSubtitle(new BaseComponent[] { subtitle });
     }
 
     @Override
     public void showTitle(@org.jspecify.annotations.Nullable BaseComponent[] title) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'showTitle'");
+        if (title != null) sendTitleJson(net.md_5.bungee.chat.ComponentSerializer.toString(title), PlayerTitleMode.PLAYER_TITLE_MODE_TITLE);
     }
 
     @Override
     public void showTitle(@org.jspecify.annotations.Nullable BaseComponent title) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'showTitle'");
+        if (title != null) showTitle(new BaseComponent[] { title });
     }
 
     @Override
     public void showTitle(@org.jspecify.annotations.Nullable BaseComponent[] title,
             @org.jspecify.annotations.Nullable BaseComponent[] subtitle, int fadeInTicks, int stayTicks,
             int fadeOutTicks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'showTitle'");
+        setTitleTimes(fadeInTicks, stayTicks, fadeOutTicks);
+        showTitle(title);
+        if (subtitle != null) setSubtitle(subtitle);
     }
 
     @Override
     public void showTitle(@org.jspecify.annotations.Nullable BaseComponent title,
             @org.jspecify.annotations.Nullable BaseComponent subtitle, int fadeInTicks, int stayTicks,
             int fadeOutTicks) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'showTitle'");
+        showTitle(title == null ? null : new BaseComponent[] { title }, subtitle == null ? null : new BaseComponent[] { subtitle }, fadeInTicks, stayTicks, fadeOutTicks);
     }
 
     @Override
     public void sendTitle(Title title) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sendTitle'");
+        showTitle(title.getTitle(), title.getSubtitle(), title.getFadeIn(), title.getStay(), title.getFadeOut());
     }
 
     @Override
     public void updateTitle(Title title) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateTitle'");
+        sendTitle(title);
     }
 
     @Override
     public void hideTitle() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'hideTitle'");
+        clearTitle(false);
     }
 
     @Override
@@ -1390,47 +1412,40 @@ public class PatchBukkitPlayer
     @Override
     public void setResourcePack(String url, byte @org.jspecify.annotations.Nullable [] hash,
             @org.jspecify.annotations.Nullable String prompt, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setResourcePack'");
+        setResourcePack(UUID.nameUUIDFromBytes(url.getBytes(StandardCharsets.UTF_8)), url, hash, prompt, force);
     }
 
     @Override
     public void setResourcePack(UUID id, String url, byte @org.jspecify.annotations.Nullable [] hash,
             @org.jspecify.annotations.Nullable String prompt, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setResourcePack'");
+        setResourcePack(id, url, hash, prompt == null ? null : LegacyComponentSerializer.legacySection().deserialize(prompt), force);
     }
 
     @Override
     public void setResourcePack(UUID uuid, String url, byte @org.jspecify.annotations.Nullable [] hash,
             @org.jspecify.annotations.Nullable Component prompt, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setResourcePack'");
+        sendResourcePack(uuid, url, hash, prompt, force);
     }
 
     @Override
     public @org.jspecify.annotations.Nullable Status getResourcePackStatus() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getResourcePackStatus'");
+        return resourcePackStatus;
     }
 
     @Override
     public void addResourcePack(UUID id, String url, byte @org.jspecify.annotations.Nullable [] hash,
             @org.jspecify.annotations.Nullable String prompt, boolean force) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addResourcePack'");
+        setResourcePack(id, url, hash, prompt, force);
     }
 
     @Override
     public void removeResourcePack(UUID id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeResourcePack'");
+        NativeBridgeFfi.removeResourcePack(RemoveResourcePackRequest.newBuilder().setPlayerUuid(BridgeUtils.convertUuid(uuid)).setPackUuid(BridgeUtils.convertUuid(Objects.requireNonNull(id))).build());
     }
 
     @Override
     public void removeResourcePacks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeResourcePacks'");
+        NativeBridgeFfi.clearResourcePacks(BridgeUtils.convertUuid(uuid));
     }
 
     @Override
@@ -1508,21 +1523,20 @@ public class PatchBukkitPlayer
     @Override
     public void sendTitle(@org.jspecify.annotations.Nullable String title,
             @org.jspecify.annotations.Nullable String subtitle) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sendTitle'");
+        sendTitle(title, subtitle, 10, 70, 20);
     }
 
     @Override
     public void sendTitle(@org.jspecify.annotations.Nullable String title,
             @org.jspecify.annotations.Nullable String subtitle, int fadeIn, int stay, int fadeOut) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sendTitle'");
+        setTitleTimes(fadeIn, stay, fadeOut);
+        if (title != null) sendTitleComponent(LegacyComponentSerializer.legacySection().deserialize(title), PlayerTitleMode.PLAYER_TITLE_MODE_TITLE);
+        if (subtitle != null) sendTitleComponent(LegacyComponentSerializer.legacySection().deserialize(subtitle), PlayerTitleMode.PLAYER_TITLE_MODE_SUBTITLE);
     }
 
     @Override
     public void resetTitle() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'resetTitle'");
+        clearTitle(true);
     }
 
     @Override

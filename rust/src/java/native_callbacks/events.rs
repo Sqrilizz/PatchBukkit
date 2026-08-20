@@ -1,5 +1,7 @@
 use std::sync::Arc;
+use tokio::sync::mpsc;
 
+use pumpkin::plugin::Context;
 use pumpkin::plugin::EventPriority;
 
 use crate::events::handler::PatchBukkitEventHandler;
@@ -7,6 +9,20 @@ use crate::java::native_callbacks::CALLBACK_CONTEXT;
 use crate::proto::patchbukkit::events::{
     CallEventRequest, CallEventResponse, RegisterEventRequest,
 };
+
+pub fn register_internal_events(
+    context: &Arc<Context>,
+    command_tx: mpsc::Sender<crate::java::jvm::commands::JvmCommand>,
+) {
+    context.register_event::<
+        pumpkin::plugin::player::player_resource_pack_status::PlayerResourcePackStatusEvent,
+        PatchBukkitEventHandler<pumpkin::plugin::player::player_resource_pack_status::PlayerResourcePackStatusEvent>,
+    >(
+        Arc::new(PatchBukkitEventHandler::new("PatchBukkit".to_string(), command_tx)),
+        EventPriority::Normal,
+        true,
+    );
+}
 
 pub fn ffi_native_bridge_register_event_impl(request: RegisterEventRequest) -> Option<()> {
     let ctx = CALLBACK_CONTEXT.get()?;
@@ -49,6 +65,20 @@ pub fn ffi_native_bridge_register_event_impl(request: RegisterEventRequest) -> O
                 .register_event::<
                     pumpkin::plugin::player::player_leave::PlayerLeaveEvent,
                     PatchBukkitEventHandler<pumpkin::plugin::player::player_leave::PlayerLeaveEvent>,
+                >(
+                    Arc::new(PatchBukkitEventHandler::new(
+                        request.plugin_name.clone(),
+                        command_tx.clone(),
+                    )),
+                    pumpkin_priority,
+                    request.blocking,
+                );
+        }
+        "org.bukkit.event.player.PlayerResourcePackStatusEvent" => {
+            context
+                .register_event::<
+                    pumpkin::plugin::player::player_resource_pack_status::PlayerResourcePackStatusEvent,
+                    PatchBukkitEventHandler<pumpkin::plugin::player::player_resource_pack_status::PlayerResourcePackStatusEvent>,
                 >(
                     Arc::new(PatchBukkitEventHandler::new(
                         request.plugin_name.clone(),
@@ -318,7 +348,6 @@ pub fn ffi_native_bridge_register_event_impl(request: RegisterEventRequest) -> O
         | "org.bukkit.event.player.PlayerAdvancementDoneEvent"
         | "org.bukkit.event.player.PlayerExpChangeEvent"
         | "org.bukkit.event.player.PlayerLevelChangeEvent"
-        | "org.bukkit.event.player.PlayerResourcePackStatusEvent"
         | "org.bukkit.event.player.PlayerStatisticIncrementEvent"
         | "org.bukkit.event.player.PlayerPortalEvent"
         | "org.bukkit.event.player.PlayerKickEvent"

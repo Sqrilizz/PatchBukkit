@@ -33,6 +33,7 @@ message Event {
     BlockGrowEvent block_grow = 19;
     BlockFormEvent block_form = 20;
     BlockFadeEvent block_fade = 21;
+    PlayerResourcePackStatusEvent player_resource_pack_status = 22;
   }
 }
 

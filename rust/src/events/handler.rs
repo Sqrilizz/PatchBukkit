@@ -13,8 +13,8 @@ use crate::proto::patchbukkit::events::{
     BlockBreakEvent, BlockDamageEvent, BlockFadeEvent, BlockFormEvent, BlockGrowEvent,
     BlockIgniteEvent, BlockPlaceEvent, Event, PlayerChatEvent, PlayerGameModeChangeEvent,
     PlayerInteractEntityEvent, PlayerInteractEvent, PlayerJoinEvent, PlayerMoveEvent,
-    PlayerQuitEvent, PlayerToggleFlightEvent, PlayerToggleSneakEvent, PlayerToggleSprintEvent,
-    ServerCommandEvent, SignChangeEvent,
+    PlayerQuitEvent, PlayerResourcePackStatusEvent, PlayerToggleFlightEvent,
+    PlayerToggleSneakEvent, PlayerToggleSprintEvent, ServerCommandEvent, SignChangeEvent,
 };
 
 pub struct EventContext {
@@ -86,6 +86,47 @@ impl PatchBukkitEvent for pumpkin::plugin::player::player_leave::PlayerLeaveEven
             self.leave_message = msg;
         }
 
+        Some(())
+    }
+}
+
+impl PatchBukkitEvent
+    for pumpkin::plugin::player::player_resource_pack_status::PlayerResourcePackStatusEvent
+{
+    fn to_payload(&self, server: Arc<Server>) -> JvmEventPayload {
+        JvmEventPayload {
+            event: Event {
+                data: Some(Data::PlayerResourcePackStatus(
+                    PlayerResourcePackStatusEvent {
+                        player_uuid: Some(Uuid {
+                            value: self.player.gameprofile.id.to_string(),
+                        }),
+                        pack_uuid: Some(Uuid {
+                            value: self.pack_id.clone(),
+                        }),
+                        status: match self.status.as_str() {
+                            "DownloadSuccess" => "SUCCESSFULLY_LOADED",
+                            "Declined" => "DECLINED",
+                            "DownloadFail" => "FAILED_DOWNLOAD",
+                            "Accepted" => "ACCEPTED",
+                            "Downloaded" => "DOWNLOADED",
+                            "InvalidUrl" => "INVALID_URL",
+                            "ReloadFailed" => "FAILED_RELOAD",
+                            "Discarded" => "DISCARDED",
+                            _ => "FAILED_DOWNLOAD",
+                        }
+                        .to_string(),
+                    },
+                )),
+            },
+            context: EventContext {
+                server,
+                player: Some(self.player.clone()),
+            },
+        }
+    }
+
+    fn apply_modifications(&mut self, _server: &Arc<Server>, _data: Data) -> Option<()> {
         Some(())
     }
 }

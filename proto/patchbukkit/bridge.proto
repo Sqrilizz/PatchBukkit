@@ -12,6 +12,7 @@ import "patchbukkit/events/event.proto";
 import "patchbukkit/itemstack.proto";
 import "patchbukkit/log.proto";
 import "patchbukkit/message.proto";
+import "patchbukkit/player.proto";
 import "patchbukkit/registry.proto";
 import "patchbukkit/sound.proto";
 import "patchbukkit/world.proto";
@@ -51,6 +52,12 @@ service NativeBridge {
   rpc CallEvent(patchbukkit.events.CallEventRequest) returns (patchbukkit.events.CallEventResponse);
 
   rpc SendMessage(patchbukkit.message.SendMessageRequest) returns (google.protobuf.Empty);
+  rpc SendPlayerTitle(patchbukkit.player.SendPlayerTitleRequest) returns (google.protobuf.Empty);
+  rpc SetPlayerTitleTimes(patchbukkit.player.SetPlayerTitleTimesRequest) returns (google.protobuf.Empty);
+  rpc ClearPlayerTitle(patchbukkit.player.ClearPlayerTitleRequest) returns (google.protobuf.Empty);
+  rpc SendResourcePack(patchbukkit.player.SendResourcePackRequest) returns (google.protobuf.Empty);
+  rpc RemoveResourcePack(patchbukkit.player.RemoveResourcePackRequest) returns (google.protobuf.Empty);
+  rpc ClearResourcePacks(patchbukkit.common.UUID) returns (google.protobuf.Empty);
 
   rpc GetLocation(patchbukkit.common.UUID) returns (patchbukkit.common.Location);
 
