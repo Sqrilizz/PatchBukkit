@@ -37,7 +37,9 @@ import org.bukkit.util.*;
 import org.patchbukkit.bridge.BridgeUtils;
 import patchbukkit.bridge.NativeBridgeFfi;
 import patchbukkit.world.GetBlockDataRequest;
+import patchbukkit.world.GetLoadedChunksRequest;
 import patchbukkit.world.GetWorldInfoRequest;
+import patchbukkit.world.IsChunkLoadedRequest;
 import patchbukkit.world.SetBlockDataRequest;
 import patchbukkit.world.SpawnParticleRequest;
 import org.checkerframework.checker.index.qual.Positive;
@@ -138,10 +140,7 @@ public class PatchBukkitWorld
 
     @Override
     public int getChunkCount() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getChunkCount'"
-        );
+        return getLoadedChunks().length;
     }
 
     @Override
@@ -185,18 +184,18 @@ public class PatchBukkitWorld
 
     @Override
     public boolean isChunkLoaded(@NotNull Chunk chunk) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'isChunkLoaded'"
-        );
+        return isChunkLoaded(chunk.getX(), chunk.getZ());
     }
 
     @Override
     public @NotNull Chunk@NotNull [] getLoadedChunks() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'getLoadedChunks'"
-        );
+        var response = NativeBridgeFfi.getLoadedChunks(GetLoadedChunksRequest.newBuilder()
+            .setWorldUuid(BridgeUtils.convertUuid(this.uuid))
+            .build());
+        if (response == null) return new Chunk[0];
+        return response.getChunksList().stream()
+            .map(chunk -> (Chunk) new PatchBukkitChunk(this, chunk.getX(), chunk.getZ()))
+            .toArray(Chunk[]::new);
     }
 
     @Override
@@ -209,10 +208,12 @@ public class PatchBukkitWorld
 
     @Override
     public boolean isChunkLoaded(int x, int z) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException(
-            "Unimplemented method 'isChunkLoaded'"
-        );
+        var response = NativeBridgeFfi.isChunkLoaded(IsChunkLoadedRequest.newBuilder()
+            .setWorldUuid(BridgeUtils.convertUuid(this.uuid))
+            .setX(x)
+            .setZ(z)
+            .build());
+        return response != null && response.getLoaded();
     }
 
     @Override

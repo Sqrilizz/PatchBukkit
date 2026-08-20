@@ -151,7 +151,10 @@ impl JvmWorker {
                     let _ = respond_to.send(res);
                 }
                 JvmCommand::Shutdown { respond_to } => {
-                    let _ = respond_to.send(self.plugin_manager.unload_all_plugins());
+                    let result = self
+                        .disable_plugins()
+                        .and_then(|()| self.plugin_manager.unload_all_plugins());
+                    let _ = respond_to.send(result);
                     break;
                 }
                 JvmCommand::FireEvent {
@@ -231,7 +234,21 @@ impl JvmWorker {
             }
         }
 
+        if let Some(jvm) = self.jvm.take()
+            && let Err(error) = jvm.detach_current_thread()
+        {
+            tracing::warn!("Failed to detach JVM worker thread: {error}");
+        }
+
         tracing::info!("JVM worker thread exited");
+    }
+
+    fn disable_plugins(&mut self) -> anyhow::Result<()> {
+        let Some(jvm) = &self.jvm else {
+            return Ok(());
+        };
+        jvm.attach_current_thread(|env| self.plugin_manager.disable_all_plugins(env))
+            .map_err(|error| anyhow::anyhow!("Failed to disable plugins: {error}"))
     }
 
     fn initialize_jvm(&mut self, jassets_path: &PathBuf) -> anyhow::Result<()> {

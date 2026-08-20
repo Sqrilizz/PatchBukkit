@@ -65,5 +65,6 @@ service NativeBridge {
   rpc RegisterCommand(patchbukkit.command.RegisterCommandRequest) returns (google.protobuf.Empty);
 
   rpc GetWorldInfo(patchbukkit.world.GetWorldInfoRequest) returns (patchbukkit.world.GetWorldInfoResponse);
+  rpc GetLoadedChunks(patchbukkit.world.GetLoadedChunksRequest) returns (patchbukkit.world.GetLoadedChunksResponse);
+  rpc IsChunkLoaded(patchbukkit.world.IsChunkLoadedRequest) returns (patchbukkit.world.IsChunkLoadedResponse);
 }
-

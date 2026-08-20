@@ -1,6 +1,21 @@
-cd java
-./gradlew jar
-cd ..
-cd rust
-cargo update -p pumpkin -p pumpkin-api-macros -p pumpkin-data -p pumpkin-protocol -p pumpkin-util
-cargo build
+#!/usr/bin/env bash
+set -euo pipefail
+
+case "${1:-}" in
+    --release)
+        (cd java && ./gradlew jar)
+        (cd rust && cargo build --release)
+        ;;
+    --test)
+        (cd java && ./gradlew test :patchbukkit-test-plugin:build)
+        (cd rust && cargo test)
+        ;;
+    "")
+        (cd java && ./gradlew jar)
+        (cd rust && cargo build)
+        ;;
+    *)
+        printf 'Usage: %s [--release|--test]\n' "$0" >&2
+        exit 2
+        ;;
+esac

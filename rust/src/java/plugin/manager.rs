@@ -116,6 +116,7 @@ impl PluginManager {
         spigot_plugin_config: &Option<String>,
     ) -> Result<()> {
         let parsed_paper_plugin = PaperPluginYml::parse(paper_plugin_config)?;
+        validate_api_version(parsed_paper_plugin.api_version.as_deref())?;
         let parsed_spigot_plugin = match spigot_plugin_config {
             Some(config) => Some(SpigotPluginYml::parse(config)?),
             None => None,
@@ -275,6 +276,7 @@ impl PluginManager {
         spigot_plugin_config: &str,
     ) -> Result<()> {
         let parsed_spigot_plugin = SpigotPluginYml::parse(spigot_plugin_config)?;
+        validate_api_version(parsed_spigot_plugin.api_version.as_deref())?;
 
         let depends = normalize_names(parsed_spigot_plugin.depend.clone());
         let soft_depends = normalize_names(parsed_spigot_plugin.softdepend.clone());
@@ -320,7 +322,21 @@ impl PluginManager {
         Ok(())
     }
 
-    pub fn disable_all_plugins(&mut self, _env: &mut Env) -> Result<()> {
+    pub fn disable_all_plugins(&mut self, env: &mut Env) -> Result<()> {
+        let manager = env
+            .call_static_method(
+                jni::jni_str!("org/bukkit/Bukkit"),
+                jni::jni_str!("getPluginManager"),
+                jni::jni_sig!("()Lorg/bukkit/plugin/PluginManager;"),
+                &[],
+            )?
+            .l()?;
+        env.call_method(
+            manager,
+            jni::jni_str!("disablePlugins"),
+            jni::jni_sig!("()V"),
+            &[],
+        )?;
         Ok(())
     }
 
@@ -424,18 +440,13 @@ impl PluginManager {
                 continue;
             }
 
-            let mut before = Vec::new();
-            for dep in plugin.depends.iter().chain(plugin.soft_depends.iter()) {
+            for dep in &plugin.depends {
                 if let Some(resolved) = self.resolve_dependency_name(dep, &provides_map)
                     && resolved != *key
                     && active.contains(&resolved)
                 {
-                    before.push(resolved);
+                    add_edge(&mut edges, &mut indegree, &resolved, key);
                 }
-            }
-
-            for dep in before {
-                add_edge(&mut edges, &mut indegree, &dep, key);
             }
 
             for target in &plugin.load_before {
@@ -453,6 +464,23 @@ impl PluginManager {
                     && active.contains(&resolved)
                 {
                     add_edge(&mut edges, &mut indegree, &resolved, key);
+                }
+            }
+        }
+
+        let mut keys: Vec<_> = active.iter().cloned().collect();
+        keys.sort();
+        for key in keys {
+            let Some(plugin) = self.plugins.get(&key) else {
+                continue;
+            };
+            for dep in &plugin.soft_depends {
+                if let Some(resolved) = self.resolve_dependency_name(dep, &provides_map)
+                    && resolved != key
+                    && active.contains(&resolved)
+                    && !has_path(&edges, &key, &resolved)
+                {
+                    add_edge(&mut edges, &mut indegree, &resolved, &key);
                 }
             }
         }
@@ -577,6 +605,36 @@ fn dedupe_strings(values: Vec<String>) -> Vec<String> {
     output
 }
 
+fn validate_api_version(version: Option<&str>) -> Result<()> {
+    let Some(version) = version else {
+        return Ok(());
+    };
+    let major = version.trim().parse::<u32>().map_err(|_| {
+        anyhow::anyhow!("Unsupported api-version '{version}'; expected an integer up to 26")
+    })?;
+    if major > 26 {
+        anyhow::bail!("Unsupported api-version '{version}'; PatchBukkit supports up to 26");
+    }
+    Ok(())
+}
+
+fn has_path(edges: &HashMap<String, HashSet<String>>, from: &str, to: &str) -> bool {
+    let mut pending = vec![from];
+    let mut visited = HashSet::new();
+    while let Some(node) = pending.pop() {
+        if !visited.insert(node) {
+            continue;
+        }
+        if node == to {
+            return true;
+        }
+        if let Some(children) = edges.get(node) {
+            pending.extend(children.iter().map(String::as_str));
+        }
+    }
+    false
+}
+
 #[allow(dead_code)]
 fn add_edge(
     edges: &mut HashMap<String, HashSet<String>>,
@@ -592,5 +650,87 @@ fn add_edge(
         && let Some(count) = indegree.get_mut(to)
     {
         *count += 1;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn plugin(name: &str, depends: &[&str], soft_depends: &[&str]) -> Plugin {
+        Plugin {
+            name: name.to_string(),
+            version: "1".to_string(),
+            main_class: "test.Main".to_string(),
+            path: PathBuf::from(name),
+            plugin_type: PluginType::Spigot(SpigotPluginData {
+                spigot_config: SpigotPluginYml::parse(&format!(
+                    "name: {name}\nversion: '1'\nmain: test.Main"
+                ))
+                .unwrap(),
+            }),
+            state: PluginState::Registered,
+            data_folder: PathBuf::from(name),
+            commands: HashMap::new(),
+            provides: Vec::new(),
+            depends: depends.iter().map(|name| normalize_name(name)).collect(),
+            soft_depends: soft_depends
+                .iter()
+                .map(|name| normalize_name(name))
+                .collect(),
+            load_before: Vec::new(),
+            load_after: Vec::new(),
+            classpath_deps: Vec::new(),
+            libraries: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn soft_dependency_cycle_keeps_independent_plugins_loadable() {
+        let mut manager = PluginManager::new();
+        manager.add_plugin(plugin("Alpha", &[], &["Beta"]));
+        manager.add_plugin(plugin("Beta", &[], &["Alpha"]));
+        manager.add_plugin(plugin("Gamma", &[], &[]));
+        let order = manager.compute_load_order();
+        assert_eq!(order.len(), 3);
+        assert!(order.contains(&"alpha".to_string()));
+        assert!(order.contains(&"beta".to_string()));
+        assert!(order.contains(&"gamma".to_string()));
+        assert!(
+            order.iter().position(|name| name == "beta")
+                < order.iter().position(|name| name == "alpha")
+        );
+    }
+
+    #[test]
+    fn required_dependencies_precede_dependents() {
+        let mut manager = PluginManager::new();
+        manager.add_plugin(plugin("Core", &[], &[]));
+        manager.add_plugin(plugin("Addon", &["Core"], &["Optional"]));
+        manager.add_plugin(plugin("Optional", &[], &["Addon"]));
+        let order = manager.compute_load_order();
+        assert!(
+            order.iter().position(|name| name == "core")
+                < order.iter().position(|name| name == "addon")
+        );
+    }
+
+    #[test]
+    fn validates_supported_api_versions() {
+        assert!(validate_api_version(Some("26")).is_ok());
+        assert!(validate_api_version(Some("27")).is_err());
+        assert!(validate_api_version(Some("1.21")).is_err());
+    }
+
+    #[test]
+    fn parses_plugin_metadata() {
+        let spigot =
+            SpigotPluginYml::parse("name: Test\nversion: '1'\nmain: test.Main\napi-version: '26'")
+                .unwrap();
+        let paper =
+            PaperPluginYml::parse("name: Test\nversion: '1'\nmain: test.Main\napi-version: '26'")
+                .unwrap();
+        assert_eq!(spigot.api_version.as_deref(), Some("26"));
+        assert_eq!(paper.api_version.as_deref(), Some("26"));
     }
 }

@@ -173,3 +173,47 @@ pub fn ffi_native_bridge_get_world_info_impl(
         seed: 0,
     })
 }
+
+pub fn ffi_native_bridge_get_loaded_chunks_impl(
+    request: crate::proto::patchbukkit::world::GetLoadedChunksRequest,
+) -> Option<crate::proto::patchbukkit::world::GetLoadedChunksResponse> {
+    let ctx = CALLBACK_CONTEXT.get()?;
+    let world_uuid = uuid::Uuid::parse_str(&request.world_uuid?.value).ok()?;
+    let world = ctx
+        .plugin_context
+        .server
+        .worlds
+        .load_full()
+        .iter()
+        .find(|world| world.uuid == world_uuid)
+        .cloned()?;
+    let chunks = world
+        .level
+        .loaded_chunks
+        .iter()
+        .map(|chunk| crate::proto::patchbukkit::world::ChunkPosition {
+            x: chunk.key().x,
+            z: chunk.key().y,
+        })
+        .collect();
+    Some(crate::proto::patchbukkit::world::GetLoadedChunksResponse { chunks })
+}
+
+pub fn ffi_native_bridge_is_chunk_loaded_impl(
+    request: crate::proto::patchbukkit::world::IsChunkLoadedRequest,
+) -> Option<crate::proto::patchbukkit::world::IsChunkLoadedResponse> {
+    let ctx = CALLBACK_CONTEXT.get()?;
+    let world_uuid = uuid::Uuid::parse_str(&request.world_uuid?.value).ok()?;
+    let world = ctx
+        .plugin_context
+        .server
+        .worlds
+        .load_full()
+        .iter()
+        .find(|world| world.uuid == world_uuid)
+        .cloned()?;
+    let position = pumpkin_util::math::vector2::Vector2::new(request.x, request.z);
+    Some(crate::proto::patchbukkit::world::IsChunkLoadedResponse {
+        loaded: world.level.is_chunk_loaded(&position),
+    })
+}

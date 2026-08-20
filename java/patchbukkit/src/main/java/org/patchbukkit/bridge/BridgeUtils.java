@@ -11,6 +11,18 @@ public class BridgeUtils {
         return patchbukkit.common.UUID.newBuilder().setValue(uuid.toString()).build();
     }
 
+    public static UUID convertUuid(long mostSignificantBits, long leastSignificantBits) {
+        return new UUID(mostSignificantBits, leastSignificantBits);
+    }
+
+    public static long getMostSignificantBits(UUID uuid) {
+        return uuid.getMostSignificantBits();
+    }
+
+    public static long getLeastSignificantBits(UUID uuid) {
+        return uuid.getLeastSignificantBits();
+    }
+
     public static patchbukkit.common.Location convertLocation(org.bukkit.Location location) {
         if (location == null) return null;
         var pos = patchbukkit.common.Vec3.newBuilder()
