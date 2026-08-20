@@ -1,8 +1,10 @@
 use std::sync::Arc;
 use tokio::sync::mpsc;
 
-use pumpkin::plugin::Context;
-use pumpkin::plugin::EventPriority;
+use pumpkin::{
+    plugin::{BoxFuture, Context, EventHandler, EventPriority},
+    server::Server,
+};
 
 use crate::events::handler::PatchBukkitEventHandler;
 use crate::java::native_callbacks::CALLBACK_CONTEXT;
@@ -15,6 +17,14 @@ pub fn register_internal_events(
     command_tx: mpsc::Sender<crate::java::jvm::commands::JvmCommand>,
 ) {
     context.register_event::<
+        pumpkin::plugin::server::server_tick_start::ServerTickStartEvent,
+        SchedulerTickHandler,
+    >(
+        Arc::new(SchedulerTickHandler { command_tx: command_tx.clone() }),
+        EventPriority::Normal,
+        false,
+    );
+    context.register_event::<
         pumpkin::plugin::player::player_resource_pack_status::PlayerResourcePackStatusEvent,
         PatchBukkitEventHandler<pumpkin::plugin::player::player_resource_pack_status::PlayerResourcePackStatusEvent>,
     >(
@@ -22,6 +32,33 @@ pub fn register_internal_events(
         EventPriority::Normal,
         true,
     );
+}
+
+struct SchedulerTickHandler {
+    command_tx: mpsc::Sender<crate::java::jvm::commands::JvmCommand>,
+}
+
+impl EventHandler<pumpkin::plugin::server::server_tick_start::ServerTickStartEvent>
+    for SchedulerTickHandler
+{
+    fn handle<'a>(
+        &'a self,
+        _server: &'a Arc<Server>,
+        event: &'a pumpkin::plugin::server::server_tick_start::ServerTickStartEvent,
+    ) -> BoxFuture<'a, ()> {
+        let command_tx = self.command_tx.clone();
+        let tick = i64::from(event.tick);
+        Box::pin(async move {
+            let (respond_to, response) = tokio::sync::oneshot::channel();
+            if command_tx
+                .send(crate::java::jvm::commands::JvmCommand::RunSchedulerTick { tick, respond_to })
+                .await
+                .is_ok()
+            {
+                let _ = response.await;
+            }
+        })
+    }
 }
 
 pub fn ffi_native_bridge_register_event_impl(request: RegisterEventRequest) -> Option<()> {

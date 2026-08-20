@@ -48,6 +48,10 @@ pub enum JvmCommand {
     Shutdown {
         respond_to: oneshot::Sender<Result<()>>,
     },
+    RunSchedulerTick {
+        tick: i64,
+        respond_to: oneshot::Sender<Result<()>>,
+    },
     FireEvent {
         payload: JvmEventPayload,
         plugin: String,

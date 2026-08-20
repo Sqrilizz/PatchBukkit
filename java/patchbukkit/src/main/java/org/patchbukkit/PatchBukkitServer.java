@@ -149,7 +149,12 @@ public class PatchBukkitServer implements Server {
         });
         PatchBukkitServer server = getInstance();
         org.bukkit.Bukkit.setServer(server);
+        ((PatchBukkitScheduler) server.scheduler).bindPrimaryThread();
         return server;
+    }
+
+    public static void tickScheduler(long tick) {
+        ((PatchBukkitScheduler) getInstance().scheduler).tick(tick);
     }
 
     private final String serverName;
@@ -1426,7 +1431,7 @@ public class PatchBukkitServer implements Server {
 
     @Override
     public boolean isPrimaryThread() {
-        return true;
+        return ((PatchBukkitScheduler) scheduler).isPrimaryThread();
     }
 
     @Override

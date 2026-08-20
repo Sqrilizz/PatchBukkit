@@ -6,7 +6,6 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.ServicesManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -19,25 +18,32 @@ public class PatchBukkitServicesManager implements ServicesManager {
 
     @Override
     public <T> void register(@NotNull Class<T> service, @NotNull T provider, @NotNull Plugin plugin, @NotNull ServicePriority priority) {
-        List<RegisteredServiceProvider<?>> list = providers.computeIfAbsent(service, k -> new ArrayList<>());
-        list.add(new RegisteredServiceProvider<>(service, provider, priority, plugin));
-        list.sort((a, b) -> b.getPriority().compareTo(a.getPriority()));
+        providers.compute(service, (key, current) -> {
+            List<RegisteredServiceProvider<?>> next = new java.util.ArrayList<>(current == null ? List.of() : current);
+            next.add(new RegisteredServiceProvider<>(service, provider, priority, plugin));
+            next.sort((a, b) -> b.getPriority().compareTo(a.getPriority()));
+            return List.copyOf(next);
+        });
     }
 
     @Override
     public void unregisterAll(@NotNull Plugin plugin) {
-        providers.values().forEach(list -> list.removeIf(r -> r.getPlugin().equals(plugin)));
+        providers.replaceAll((service, current) -> current.stream().filter(provider -> !provider.getPlugin().equals(plugin)).toList());
+        providers.entrySet().removeIf(entry -> entry.getValue().isEmpty());
     }
 
     @Override
     public void unregister(@NotNull Object provider) {
-        providers.values().forEach(list -> list.removeIf(r -> r.getProvider().equals(provider)));
+        providers.replaceAll((service, current) -> current.stream().filter(registration -> !registration.getProvider().equals(provider)).toList());
+        providers.entrySet().removeIf(entry -> entry.getValue().isEmpty());
     }
 
     @Override
     public void unregister(@NotNull Class<?> service, @NotNull Object provider) {
-        List<RegisteredServiceProvider<?>> list = providers.get(service);
-        if (list != null) list.removeIf(r -> r.getProvider().equals(provider));
+        providers.computeIfPresent(service, (key, current) -> {
+            List<RegisteredServiceProvider<?>> next = current.stream().filter(registration -> !registration.getProvider().equals(provider)).toList();
+            return next.isEmpty() ? null : next;
+        });
     }
 
     @Override
@@ -58,7 +64,7 @@ public class PatchBukkitServicesManager implements ServicesManager {
 
     @Override
     public @NotNull List<RegisteredServiceProvider<?>> getRegistrations(@NotNull Plugin plugin) {
-        List<RegisteredServiceProvider<?>> result = new ArrayList<>();
+        List<RegisteredServiceProvider<?>> result = new java.util.ArrayList<>();
         providers.values().forEach(list -> list.stream()
                 .filter(r -> r.getPlugin().equals(plugin))
                 .forEach(result::add));
@@ -70,7 +76,7 @@ public class PatchBukkitServicesManager implements ServicesManager {
     public <T> @NotNull Collection<RegisteredServiceProvider<T>> getRegistrations(@NotNull Class<T> service) {
         List<RegisteredServiceProvider<?>> list = providers.get(service);
         if (list == null) return Collections.emptyList();
-        List<RegisteredServiceProvider<T>> result = new ArrayList<>();
+        List<RegisteredServiceProvider<T>> result = new java.util.ArrayList<>();
         for (RegisteredServiceProvider<?> r : list) result.add((RegisteredServiceProvider<T>) r);
         return result;
     }

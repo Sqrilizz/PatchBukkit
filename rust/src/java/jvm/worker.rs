@@ -157,6 +157,23 @@ impl JvmWorker {
                     let _ = respond_to.send(result);
                     break;
                 }
+                JvmCommand::RunSchedulerTick { tick, respond_to } => {
+                    let res = if let Some(ref jvm) = self.jvm {
+                        jvm.attach_current_thread(|env| -> anyhow::Result<()> {
+                            env.call_static_method(
+                                jni::jni_str!("org/patchbukkit/PatchBukkitServer"),
+                                jni::jni_str!("tickScheduler"),
+                                jni::jni_sig!("(J)V"),
+                                &[jni::objects::JValue::Long(tick)],
+                            )?;
+                            Ok(())
+                        })
+                        .map_err(|e| anyhow::anyhow!("Failed to tick Bukkit scheduler: {e}"))
+                    } else {
+                        Err(anyhow::anyhow!("JVM is not initialized"))
+                    };
+                    let _ = respond_to.send(res);
+                }
                 JvmCommand::FireEvent {
                     respond_to,
                     plugin,

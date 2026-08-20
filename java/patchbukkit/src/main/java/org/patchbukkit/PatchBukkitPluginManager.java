@@ -237,6 +237,9 @@ public class PatchBukkitPluginManager implements PluginManager {
                 plugin.getPluginLoader().disablePlugin(plugin);
             } catch (Throwable ex) {
                 server.getLogger().log(Level.SEVERE, "Error disabling " + plugin.getName(), ex);
+            } finally {
+                server.getScheduler().cancelTasks(plugin);
+                server.getServicesManager().unregisterAll(plugin);
             }
         }
     }
